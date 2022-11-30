@@ -30,7 +30,7 @@ async function hello(req, res) {
 // Route 2 (handler)
 async function covid(req, res) {
     const choice = req.params.choice ? req.params.choice : 'cases'
-    const county = req.query.fips ? req.query.fips : "Alameda"
+    const county = req.query.county_name ? req.query.county_name : "Alameda"
     const fips = 6001
     connection.query(`SELECT fips FROM County WHERE county_name= %${county}%`, function(error, results, fields) {
         fips = results.fips

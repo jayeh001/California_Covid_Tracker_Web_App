@@ -14,8 +14,14 @@ app.use(cors({ credentials: true, origin: ['http://localhost:3000'] }));
 // Route 1 - register as GET 
 app.get('/hello', routes.hello)
 
+// Route 2 - register as GET 
+app.get('/covid/:type', routes.covid)
 
+// Route 3 - register as GET 
+app.get('/correlations/:category', routes.correlations)
 
+// Route 4 - register as GET 
+app.get('/timeline', routes.timeline)
 
 
 app.listen(config.server_port, () => {

@@ -11,9 +11,15 @@ import {
 import HomePage from './pages/HomePage';
 import Page1 from './pages/Page1';
 import Page2 from './pages/Page2';
+import CovidPage from './pages/CovidPage';
+
+import 'antd/dist/antd.css';
+import "bootstrap/dist/css/bootstrap.min.css";
+import "shards-ui/dist/css/shards.min.css"
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
+
+ReactDOM.render(
   <div>
     <Router>
       <Switch>
@@ -23,18 +29,18 @@ root.render(
 								<HomePage />
 							)}/>
         <Route exact
-							path="/page1"
+							path="/covid"
 							render={() => (
-								<Page1 />
+								<CovidPage />
 							)}/>
-        <Route exact
-							path="/page2"
+		<Route path="/covid/:type"
 							render={() => (
-								<Page2 />
+								<CovidPage />
 							)}/>
       </Switch>
     </Router>
-  </div>
+  </div>,
+  document.getElementById('root')
 );
 
 // If you want to start measuring performance in your app, pass a function

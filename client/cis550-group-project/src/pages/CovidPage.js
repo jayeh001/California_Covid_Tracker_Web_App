@@ -1,41 +1,27 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import {
-	BrowserRouter as Router,
-	Route,
-	Switch
-} from 'react-router-dom';
+import { useEffect } from "react";
+import { getCovid } from "../fetcher";
+import { useState } from "react";
 
-import HomePage from './pages/HomePage';
-import CovidPage from './pages/CovidPage';
-//import CorrelationPage from './pages/CorrelationPage';
-//import TimelinePage from './pages/TimelinePage';
-import 'antd/dist/antd.css';
+const CovidPage = () => {
 
-import "bootstrap/dist/css/bootstrap.min.css";
-import "shards-ui/dist/css/shards.min.css"
+    const [covidData, setCovidData] = useState()
 
-ReactDOM.render(
-  <div>
-    <Router>
-      <Switch>
-        <Route exact
-							path="/"
-							render={() => (
-								<HomePage />
-							)}/>
-        <Route exact
-							path="/covid"
-							render={() => (
-								<CovidPage />
-							)}/>
-		<Route path="/covid/:type"
-							render={() => (
-								<CovidPage />
-							)}/>
-      </Switch>
-    </Router>
-  </div>,
-  document.getElementById('root')
-);
 
+    useEffect(() => {
+        getCovid("alameda", "cases").then(res => {
+            setCovidData(res.results)
+        })
+    }, [])
+
+
+    console.log(covidData)
+
+
+    return (
+        <div>
+            <h1>Covid Page</h1>
+        </div>
+    )
+}
+
+export default CovidPage;

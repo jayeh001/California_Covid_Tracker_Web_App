@@ -12,35 +12,18 @@ import HomePage from './pages/HomePage';
 import Page1 from './pages/Page1';
 import Page2 from './pages/Page2';
 import CovidPage from './pages/CovidPage';
+import { BrowserRouter } from 'react-router-dom';
 
-import 'antd/dist/antd.css';
-import "bootstrap/dist/css/bootstrap.min.css";
-import "shards-ui/dist/css/shards.min.css"
+// import 'antd/dist/antd.css';
+// import "bootstrap/dist/css/bootstrap.min.css";
+// import "shards-ui/dist/css/shards.min.css"
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
-ReactDOM.render(
-  <div>
-    <Router>
-      <Switch>
-        <Route exact
-							path="/"
-							render={() => (
-								<HomePage />
-							)}/>
-        <Route exact
-							path="/covid"
-							render={() => (
-								<CovidPage />
-							)}/>
-		<Route path="/covid/:type"
-							render={() => (
-								<CovidPage />
-							)}/>
-      </Switch>
-    </Router>
-  </div>,
-  document.getElementById('root')
+root.render(
+	<BrowserRouter>
+          <App />
+    </BrowserRouter>
 );
 
 // If you want to start measuring performance in your app, pass a function

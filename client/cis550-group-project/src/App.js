@@ -1,24 +1,42 @@
 import logo from './logo.svg';
 import './App.css';
+import {
+	Route,
+	Switch
+} from 'react-router-dom';
+import HomePage from './pages/HomePage';
+import Page1 from './pages/Page1';
+import Page2 from './pages/Page2';
+import Layout from './Layout/Layout';
+import CovidPage from './pages/CovidPage';
+import CovidCorrelations from './pages/CovidCorrelationsPage';
+import CovidTimeline from './pages/CovidTimeline';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Layout>
+      <Switch>
+      <Route exact
+            path="/"
+            render={() => (
+              <HomePage />
+            )}/>
+      <Route exact
+            path="/covid"
+            render={() => (
+              <CovidPage />
+            )}/>
+      <Route path="/covid-correlations"
+            render={() => (
+              <CovidCorrelations />
+          )} />
+        <Route path="/covid-timeline"
+            render={() => (
+              <CovidTimeline />
+            )}/>
+  </Switch> 
+    </Layout>
+    
   );
 }
 

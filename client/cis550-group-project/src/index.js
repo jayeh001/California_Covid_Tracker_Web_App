@@ -3,15 +3,6 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import {
-	BrowserRouter as Router,
-	Route,
-	Switch
-} from 'react-router-dom';
-import HomePage from './pages/HomePage';
-import Page1 from './pages/Page1';
-import Page2 from './pages/Page2';
-import CovidPage from './pages/CovidPage';
 import { BrowserRouter } from 'react-router-dom';
 
 // import 'antd/dist/antd.css';

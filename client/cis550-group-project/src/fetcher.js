@@ -7,8 +7,8 @@ const getCovid = async (county_name, type) => {
     return res.json()
 }
 
-const getCorrelations = async (category, county_name) => {
-    var res = await fetch(`http://${config.server_host}:${config.server_port}/correlations/${category}?fips=${county_name}`, {
+const getCorrelations = async (category, type) => {
+    var res = await fetch(`http://${config.server_host}:${config.server_port}/correlations/${category}?type=${type}`, {
         method: 'GET',
     })
     return res.json()

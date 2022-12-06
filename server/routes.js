@@ -29,17 +29,11 @@ async function hello(req, res) {
 
 // Route 2 (handler)
 async function covid(req, res) {
-    //console.log(req.params.type)
     var type = req.params.type ? req.params.type : 'cases'
-    //const county = req.query.type ? req.query.type : "Alameda"
     var county = req.query.county_name ? req.query.county_name :'"Alameda'
     var county_code =  6001
     connection.query(`SELECT fips FROM County WHERE county_name= '${county}'`, function(error, results, fields) {
-        //console.log(req.params.type)
         console.log(req.query.county_name)
-        county_code = results[0].fips
-        //console.log(county_code)
-        //console.log(type)
         if (type == 'cases') {
             connection.query(`WITH Per_100k_Vaccination AS (SELECT (v.vaccinated / c.population * 100000) AS vaccinated_per_100k
                 FROM CountyVacc v JOIN County c ON v.county_code = c.fips

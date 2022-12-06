@@ -4,9 +4,7 @@ const getCovid = async (county_name, type) => {
     var res = await fetch(`http://${config.server_host}:${config.server_port}/covid/${type}?county_name=${county_name}`, {
         method: 'GET',
     })
-    // const data = await res.json()
-    // console.log(data)
-    return await res.json()
+    return res.json()
 }
 
 const getCorrelations = async (category, county_name) => {

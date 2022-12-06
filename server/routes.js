@@ -30,7 +30,7 @@ async function hello(req, res) {
 // Route 2 (handler)
 async function covid(req, res) {
     var type = req.params.type ? req.params.type : 'cases'
-    var county = req.query.county_name ? req.query.county_name :'"Alameda'
+    var county = req.query.county_name ? req.query.county_name :'Alameda'
     console.log('received for route: ' + county);
     //var county_code =  6001
     connection.query(`SELECT fips FROM County WHERE county_name= '${county}'`, function(error, results, fields) {

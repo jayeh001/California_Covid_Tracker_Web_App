@@ -9,7 +9,7 @@ const CovidPage = () => {
 
 	const [covidData, setCovidData] = useState();
 	const [county, setCounty] = useState('Alameda');
-	const [queryType, setQueryType] = useState();
+	const [queryType, setQueryType] = useState('cases');
 
 
 	useEffect(() => {

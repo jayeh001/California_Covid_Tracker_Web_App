@@ -31,9 +31,11 @@ async function hello(req, res) {
 async function covid(req, res) {
     var type = req.params.type ? req.params.type : 'cases'
     var county = req.query.county_name ? req.query.county_name :'"Alameda'
-    var county_code =  6001
+    console.log('received for route: ' + county);
+    //var county_code =  6001
     connection.query(`SELECT fips FROM County WHERE county_name= '${county}'`, function(error, results, fields) {
         console.log(req.query.county_name)
+        county_code = results[0].fips
         if (type == 'cases') {
             connection.query(`WITH Per_100k_Vaccination AS (SELECT (v.vaccinated / c.population * 100000) AS vaccinated_per_100k
                 FROM CountyVacc v JOIN County c ON v.county_code = c.fips
@@ -81,7 +83,7 @@ async function covid(req, res) {
                     res.json({ error: error })
                 }
                 else if (results) {
-                    console.log(results[0]);
+                    //console.log(results[0]);
                     res.json({results: results, type: type})
                 }
             });

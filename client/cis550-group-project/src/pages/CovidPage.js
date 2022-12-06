@@ -13,7 +13,7 @@ const CovidPage = () => {
 
 
     useEffect(() => {
-        getCovid('Alameda', 'cases').then(res => {
+        getCovid('Amador', 'cases').then(res => {
             setCovidData(res.results)
         })
     }, [])
@@ -21,14 +21,13 @@ const CovidPage = () => {
 
 	function onChangeCounty(event) {
 		event.preventDefault();
-		console.log(event.target.value)
-		
-        // var countyName = event.target.value
-        // console.log(event.target.value);
-       /* getCovid(countyName, 'cases').then(res => {
+		console.log('the value is: ' + event.target.value)
+
+        setCounty(event.target.value)
+        console.log('county changed to: ' + county)
+        getCovid(county, 'cases').then(res => {
             setCovidData(res.results)
         })
-        console.log('changing')*/
 	}
 	
 	function onChangeQueryType(event) {

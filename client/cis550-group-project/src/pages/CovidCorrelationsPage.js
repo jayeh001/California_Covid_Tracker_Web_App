@@ -9,7 +9,7 @@ const CovidCorrelations = () => {
 
     useEffect(() => {
         // TODO: replace this with getCorrelations
-        getCovid("alameda", "cases").then(res => {
+        getCovid("Alameda", "cases").then(res => {
             setCovidData(res.results)
         })
     }, [])

@@ -57,13 +57,6 @@ const CovidPage = () => {
 	// Don't worry about this reloading twice. It has no effect on the rendering, which
 	// is what actually counts. Specifically, the JSX in the return block below.
     console.log(covidData)
-{/* <MenuItem value={"Alameda"}>Alameda</MenuItem>
-				<MenuItem value={"Amador"}>Amador</MenuItem>
-				<MenuItem value={"Butte"}>Butte</MenuItem> {counties.map(cname, cname =>
-					<MenuItem value={"name.county_name"}>name.county_name</MenuItem>
-					)}{var map = new Map(counties.map((obj) => [obj.county_name, obj.county_name])));
-					<MenuItem value={"name.county_name"}>name.county_name</MenuItem>
-					}*/}
 
 	return (
 		<div>
@@ -81,7 +74,6 @@ const CovidPage = () => {
 					))
 				}
 			</Select>
-
 		</FormControl>
 		<p></p>
 		<FormControl fullWidth>

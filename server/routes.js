@@ -38,19 +38,19 @@ async function covid(req, res) {
         county_code = results[0].fips
         if (type == 'cases') {
             connection.query(`WITH Per_100k_Vaccination AS (SELECT (v.vaccinated / c.population * 100000) AS vaccinated_per_100k
-                FROM CountyVacc v JOIN County c ON v.county_code = c.fips
-                WHERE fips = ${county_code} AND v.Date >= ALL (SELECT Date FROM CountyVacc)),
-    
-                Per_100k_Cases AS (SELECT cases AS cases_per_100k
-                FROM CountyCases cc JOIN County c ON cc.county_code = c.fips
-                WHERE fips = ${county_code} AND cc.Date >= ALL (SELECT Date FROM CountyCases)),
-    
-                Per_100k_Deaths AS (SELECT (d.cases / c.population * 100000) AS deaths_per_100k
-                FROM CountyDeath d JOIN County c ON d.county_code = c.fips
-                WHERE fips = ${county_code} AND d.Date >= ALL (SELECT Date FROM CountyDeath))
-    
-                SELECT v.vaccinated_per_100k AS vaccinated_per_100k, c.cases_per_100k AS cases_per_100k, d.deaths_per_100k AS deaths_per_100k
-                FROM Per_100k_Vaccination v JOIN Per_100k_Cases c JOIN Per_100k_Deaths d`, function(error, results, fields) {
+            FROM CountyVacc v JOIN County c ON v.county_code = c.fips
+            WHERE vaccinated IS NOT NULL AND fips = ${county_code} AND v.Date >= ALL (SELECT Date FROM CountyVacc WHERE county_code = ${county_code} AND date IS NOT NULL AND vaccinated IS NOT NULL)),
+
+            Per_100k_Cases AS (SELECT cases AS cases_per_100k
+            FROM CountyCases cc JOIN County c ON cc.county_code = c.fips
+            WHERE cases IS NOT NULL AND fips = ${county_code} AND cc.Date >= ALL (SELECT Date FROM CountyCases WHERE county_code = ${county_code} AND date IS NOT NULL AND cases IS NOT NULL)),
+
+            Per_100k_Deaths AS (SELECT (d.cases / c.population * 100000) AS deaths_per_100k
+            FROM CountyDeath d JOIN County c ON d.county_code = c.fips
+            WHERE cases IS NOT NULL AND fips = ${county_code} AND d.Date >= ALL (SELECT date FROM CountyDeath WHERE county_code = ${county_code} AND date IS NOT NULL AND cases IS NOT NULL))
+
+            SELECT v.vaccinated_per_100k AS vaccinated_per_100k, c.cases_per_100k AS cases_per_100k, d.deaths_per_100k AS deaths_per_100k
+            FROM Per_100k_Vaccination v JOIN Per_100k_Cases c JOIN Per_100k_Deaths d;`, function(error, results, fields) {
                 
                 if (error) {
                     console.log(error)

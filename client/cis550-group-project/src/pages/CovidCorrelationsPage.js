@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { getCorrelations } from "../fetcher";
 import { useState } from "react";
+import { getCovid } from "../fetcher";
 
 const CovidCorrelations = () => {
 
@@ -9,7 +10,7 @@ const CovidCorrelations = () => {
 
     useEffect(() => {
         // TODO: replace this with getCorrelations
-        get("Alameda", "cases").then(res => {
+        getCovid("Alameda", "cases").then(res => {
             setCovidData(res.results)
         })
     }, [])

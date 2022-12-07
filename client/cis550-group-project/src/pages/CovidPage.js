@@ -1,6 +1,18 @@
 import { useCallback, useEffect } from "react";
 import { getCovid } from "../fetcher";
 import { useState } from "react";
+import { FormControl } from '@mui/material';
+import { InputLabel } from '@mui/material';
+import { Select } from '@mui/material';
+import { MenuItem } from '@mui/material';
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import * as React from 'react';
+
 
 // import Dropdown from 'react-bootstrap/Dropdown';
 // import DropdownButton from 'react-bootstrap/DropdownButton';
@@ -45,28 +57,103 @@ const CovidPage = () => {
 
 
 	return (
-		<>
-			<form>
-				<div>
-				<select value={county} onChange={onChangeCounty}>
-					<option value="Alameda">Alameda</option>
-					<option value="Amador">Amador</option>
-				</select>
-			</div>
-			<div>
-				<select value={queryType} onChange={onChangeQueryType}>
-					<option value="cases">Cases</option>
-                    <option value="correlation">Correlation</option>
-				</select>
-			</div>
-			</form>
-			<div>
-				{<p>{covidData && covidData[0].cases_per_100k ? covidData[0].cases_per_100k : null}</p>}
-				{<p>{covidData && covidData[0].Correlation ? covidData[0].Correlation : null}</p>}
-				{county && <p>{county}</p>}
-			</div>
-			
-		</>
+		<div>
+		<FormControl fullWidth>
+			<InputLabel id="demo-simple-select-label">County</InputLabel>
+			<Select
+				labelId="demo-simple-select-label"
+				id="demo-simple-select"
+				value={county}
+				label="County"
+				onChange={onChangeCounty}
+			>
+				<MenuItem value={"Alameda"}>Alameda</MenuItem>
+				<MenuItem value={"Amador"}>Amador</MenuItem>
+				<MenuItem value={"Butte"}>Butte</MenuItem>
+			</Select>
+
+		</FormControl>
+		<p></p>
+		<FormControl fullWidth>
+			<InputLabel id="demo-simple-select-label">Type</InputLabel>
+			<Select
+					labelId="demo-simple-select-label"
+					id="demo-simple-select"
+					value={queryType}
+					label="queryType"
+					onChange={onChangeQueryType}
+				>
+					<MenuItem value={"cases"}>Cases</MenuItem>
+					<MenuItem value={"correlation"}>Correlation</MenuItem>
+				</Select>
+		</FormControl>
+
+		<p></p>{ queryType == 'cases' ? 
+			<Box sx={{ minWidth: 150, maxWidth: 300 }}>
+			<Card variant="outlined">{
+			<React.Fragment>
+				<CardContent>
+					<Typography variant="h5" color="text.primary" gutterBottom>
+						Cases Per 100k
+					</Typography>
+					<Typography variant="h5" component="div">
+						{covidData && covidData[0].cases_per_100k ? covidData[0].cases_per_100k.toFixed(2) : 0}
+					</Typography>
+				</CardContent>
+			</React.Fragment>
+			}</Card>
+			</Box>
+		:  null }
+
+		<p></p>{ queryType == 'cases' ?
+			<Box sx={{ minWidth: 150, maxWidth: 300 }}>
+			<Card variant="outlined">{
+			<React.Fragment>
+				<CardContent>
+					<Typography variant="h5" color="text.primary" gutterBottom>
+						Vaccinations Per 100k
+					</Typography>
+					<Typography variant="h5" component="div">
+						{covidData && covidData[0].vaccinated_per_100k ? covidData[0].vaccinated_per_100k.toFixed(2) : 0}
+					</Typography>
+				</CardContent>
+			</React.Fragment>
+			}</Card>
+			</Box> : null }
+
+		<p></p>{ queryType == 'cases' ? 
+			<Box sx={{ minWidth: 150, maxWidth: 300 }}>
+			<Card variant="outlined">{<React.Fragment>
+				<CardContent>
+					<Typography variant="h5" color="text.primary" gutterBottom>
+						Deaths Per 100k
+					</Typography>
+					<Typography variant="h5" component="div">
+						{covidData && covidData[0].deaths_per_100k ? covidData[0].deaths_per_100k.toFixed(2) : 0}
+					</Typography>
+				</CardContent>
+			</React.Fragment>
+			}</Card>
+			</Box> : null }
+
+		<p></p>{ queryType == 'correlation' ? 
+		<Box sx={{ minWidth: 150, maxWidth: 300 }}>
+		<Card variant="outlined">{
+			<React.Fragment>
+			<CardContent>
+				<Typography variant="h5" color="text.primary" gutterBottom>
+					Correlation of Cases and Deaths
+				</Typography>
+				<Typography variant="h5" component="div">
+					{covidData && covidData[0].Correlation ? covidData[0].Correlation.toFixed(4) : 0}
+				</Typography>
+			</CardContent>
+			</React.Fragment>
+		}</Card>
+    	</Box> : null}
+		</div>
+
+		
 		
     )
 }

@@ -23,6 +23,9 @@ app.get('/correlations/:category', routes.correlations)
 // Route 4 - register as GET 
 app.get('/timeline', routes.timeline)
 
+// Route 5 - register as GET
+app.get('/counties', routes.counties)
+
 
 app.listen(config.server_port, () => {
     console.log(`Server running at http://${config.server_host}:${config.server_port}/`);

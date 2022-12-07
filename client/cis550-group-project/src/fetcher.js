@@ -21,7 +21,15 @@ const getTimeline = async (type, county_name) => {
     return res.json()
 }
 
+const getCounties = async () => {
+    var res = await fetch(`http://${config.server_host}:${config.server_port}/counties`, {
+        method: 'GET',
+    })
+    return res.json()
+}
+
 export {
+    getCounties,
     getCovid,
     getCorrelations,
     getTimeline

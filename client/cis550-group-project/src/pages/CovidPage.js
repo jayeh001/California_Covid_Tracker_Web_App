@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from "react";
-import { getCovid } from "../fetcher";
+import { getCovid, getCounties } from "../fetcher";
 import { useState } from "react";
 import { FormControl } from '@mui/material';
 import { InputLabel } from '@mui/material';
@@ -22,12 +22,16 @@ const CovidPage = () => {
 	const [covidData, setCovidData] = useState();
 	const [county, setCounty] = useState('Alameda');
 	const [queryType, setQueryType] = useState('cases');
+	const [counties, setCounties] = useState();
 
 
 	useEffect(() => {
         getCovid('Alameda', 'cases').then(res => {
             setCovidData(res.results)
         })
+		getCounties().then(res => {
+			setCounties(res.results)
+		})
     }, [])
 
 
@@ -38,7 +42,6 @@ const CovidPage = () => {
 		getCovid(event.target.value, queryType).then(res => {
             setCovidData(res.results)
 		})
-		
 	}
 	
 	function onChangeQueryType(event) {
@@ -54,7 +57,13 @@ const CovidPage = () => {
 	// Don't worry about this reloading twice. It has no effect on the rendering, which
 	// is what actually counts. Specifically, the JSX in the return block below.
     console.log(covidData)
-
+{/* <MenuItem value={"Alameda"}>Alameda</MenuItem>
+				<MenuItem value={"Amador"}>Amador</MenuItem>
+				<MenuItem value={"Butte"}>Butte</MenuItem> {counties.map(cname, cname =>
+					<MenuItem value={"name.county_name"}>name.county_name</MenuItem>
+					)}{var map = new Map(counties.map((obj) => [obj.county_name, obj.county_name])));
+					<MenuItem value={"name.county_name"}>name.county_name</MenuItem>
+					}*/}
 
 	return (
 		<div>
@@ -65,11 +74,12 @@ const CovidPage = () => {
 				id="demo-simple-select"
 				value={county}
 				label="County"
-				onChange={onChangeCounty}
-			>
-				<MenuItem value={"Alameda"}>Alameda</MenuItem>
-				<MenuItem value={"Amador"}>Amador</MenuItem>
-				<MenuItem value={"Butte"}>Butte</MenuItem>
+				onChange={onChangeCounty}>
+				{
+					counties?.map(({county_name, index}) => (
+						<MenuItem key={index} value={county_name}>{county_name}</MenuItem>
+					))
+				}
 			</Select>
 
 		</FormControl>

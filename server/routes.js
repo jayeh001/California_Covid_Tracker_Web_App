@@ -27,6 +27,16 @@ async function hello(req, res) {
     }
 }
 
+async function counties(req, res) {
+    connection.query(`SELECT county_name from County`, function(error, results, fields) {
+        if (error) {
+            console.log(error)
+        } else if (results) {
+            res.json({ results: results })
+        }
+    });
+}
+
 // Route 2 (handler)
 async function covid(req, res) {
     var type = req.params.type ? req.params.type : 'cases'
@@ -61,23 +71,23 @@ async function covid(req, res) {
                 }
             }); 
         } else {
-            connection.query(`WITH Averages AS (SELECT vaccinated_avg, deaths_avg
-                FROM (SELECT AVG(vaccinated) AS vaccinated_avg
-                      FROM CountyVacc WHERE county_code = ${county_code} GROUP BY county_code) X,
+            connection.query(`WITH Averages AS (SELECT cases_avg, deaths_avg
+                FROM (SELECT AVG(cases) AS cases_avg
+                      FROM CountyCases WHERE county_code = ${county_code} GROUP BY county_code) X,
                      (SELECT AVG(cases) AS deaths_avg
                       FROM CountyDeath WHERE county_code = ${county_code} GROUP BY county_code) Y),
-            
-                Vaccinations AS (SELECT vaccinated, date
-                        FROM CountyVacc
+
+                Cases AS (SELECT cases, date
+                        FROM CountyCases
                         WHERE county_code = ${county_code}),
-                
+
                 Deaths AS (SELECT cases, date
                             FROM CountyDeath
                             WHERE county_code = ${county_code})
-                
-                SELECT SUM((v.vaccinated - a.vaccinated_avg) * (d.cases - a.deaths_avg))/
-                        ((count(*) - 1) * (stddev_samp(v.vaccinated) * stddev_samp(d.cases))) AS Correlation
-                FROM Vaccinations v JOIN Deaths d ON v.date = d.date, Averages a`, function(error,results, fields) {
+
+                SELECT SUM((c.cases - a.cases_avg) * (d.cases - a.deaths_avg))/
+                        ((count(*) - 1) * (stddev_samp(c.cases) * stddev_samp(d.cases))) AS Correlation
+                FROM Cases c JOIN Deaths d ON c.date = d.date, Averages a`, function(error,results, fields) {
                 if (error) {
                     console.log(error)
                     res.json({ error: error })
@@ -174,6 +184,7 @@ async function correlations(req, res) {
 
 module.exports = {
     hello,
+    counties,
     covid,
     correlations,
     timeline

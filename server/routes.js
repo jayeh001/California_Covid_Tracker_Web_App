@@ -39,6 +39,7 @@ async function counties(req, res) {
 
 // Route 2 (handler)
 async function covid(req, res) {
+    console.log('inside covid')
     var type = req.params.type ? req.params.type : 'cases'
     var county = req.query.county_name ? req.query.county_name :'Alameda'
     console.log('received for route: ' + county);
@@ -110,11 +111,12 @@ async function timeline(req, res) {
 // Route 4 (handler)
 async function correlations(req, res) {
 // overcrowding or poverty
+    console.log('inside correlations')
     var category = req.params.category ? req.params.category : 'overcrowding'
     //const county = req.query.type ? req.query.type : "Alameda"
     var type = req.params.type ? req.params.type : 'rate'
     var county_name = req.query.county_name ? req.query.type :'Alameda'
-    
+    console.log('received this: ', category) 
     connection.query(`SELECT fips FROM County WHERE county_name= '${county}'`, function(error, results, fields){
         county_code = results[0].fips
         if (category = 'overcrowding') {
@@ -132,7 +134,8 @@ async function correlations(req, res) {
                         res.json({ results: results })
                     }
                 })
-            } else {
+            } else if (type = 'correlation') {
+                console.log('wtfffff')
                 connection.query(`WITH A as (SELECT overcrowd_avg, AVG(percent_infected_per_county) as infect_avg
                 FROM (SELECT AVG(percentage) as overcrowd_avg
                 FROM Overcrowding) X, (SELECT county_code, (SUM(cases)/C.population) * 100 as percent_infected_per_county FROM CountyCases CC join County C on CC.county_code = C.fips GROUP BY county_code) Y),

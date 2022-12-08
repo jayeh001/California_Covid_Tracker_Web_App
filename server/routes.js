@@ -112,72 +112,85 @@ async function correlations(req, res) {
 // overcrowding or poverty
     var category = req.params.category ? req.params.category : 'overcrowding'
     //const county = req.query.type ? req.query.type : "Alameda"
-    var type = req.query.type ? req.query.type :'rates'
+    var type = req.params.type ? req.params.type : 'rate'
+    var county_name = req.query.county_name ? req.query.type :'Alameda'
     
-    if (category = 'overcrowding') {
-        if (type = 'rates') {
-            connection.query(`WITH X as (SELECT county_code, (SUM(cases)/C.population) * 100 as percent_infected
-        FROM CountyCases CC join County C on CC.county_code = C.fips
-        GROUP BY county_code) SELECT O.county_code, O.percentage/percent_infected as overcrowding_to_cases_rate
-        FROM Overcrowding O JOIN X on O.county_code = X.county_code
-        `, function(error, results, fields) {
-                if (error) {
-                    console.log(error)
-                    res.json({ error: error })
-                } else if (results) {
-                    res.json({ results: results })
-                }
-            })
-        } else {
-            connection.query(`WITH A as (SELECT overcrowd_avg, AVG(percent_infected_per_county) as infect_avg
-            FROM (SELECT AVG(percentage) as overcrowd_avg
-            FROM Overcrowding) X, (SELECT county_code, (SUM(cases)/C.population) * 100 as percent_infected_per_county FROM CountyCases CC join County C on CC.county_code = C.fips GROUP BY county_code) Y),
-            B as (SELECT county_code, (SUM(cases)/C.population) * 100 as percent_infected_per_county
+    connection.query(`SELECT fips FROM County WHERE county_name= '${county}'`, function(error, results, fields){
+        county_code = results[0].fips
+        if (category = 'overcrowding') {
+            if (type = 'rates') {
+                connection.query(`WITH X as (SELECT county_code, (SUM(cases)/C.population) * 100 as percent_infected
             FROM CountyCases CC join County C on CC.county_code = C.fips
-            GROUP BY county_code)
-            SELECT SUM( (O.percentage - overcrowd_avg) * (percent_infected_per_county - infect_avg) ) /
-                   ((count(*) -1) * (stddev_samp(percentage) * stddev_samp(percent_infected_per_county)))
-                    as Correlation
-            FROM Overcrowding O JOIN B on O.county_code = B.county_code, A
+            GROUP BY county_code) SELECT O.county_code, O.percentage/percent_infected as overcrowding_to_cases_rate
+            FROM Overcrowding O JOIN X on O.county_code = X.county_code
+            WHERE O.county_code = ${county_code}
             `, function(error, results, fields) {
-                if (error) {
-                    console.log(error)
-                    res.json({ error: error })
-                } else if (results) {
-                    res.json({ results: results })
-                }
-            })
-        }
-    } else if (category = 'poverty') {
-        if (types = 'rates') {
-            connection.query(`WITH A as (SELECT county_code, (SUM(cases)/C.population) * 100 as percent_infected_per_county
-            FROM CountyCases CC join County C on CC.county_code = C.fips
-            GROUP BY county_code)
-            SELECT P.county_code, P.poverty/percent_infected_per_county as poverty_to_cases_rate
-            FROM Poverty P JOIN A on P.county_code = A.county_code
-            `,function(error, results, fields) {
-                if (error) {
-                    console.log(error)
-                    res.json({ error: error })
-                } else if (results) {
-                    res.json({ results: results })
-                }
-            })
-        } else {
-            connection.query(`WITH A as (SELECT overcrowd_avg, AVG(percent_infected_per_county) as infect_avg
-            FROM (SELECT AVG(percentage) as overcrowd_avg
-            FROM Overcrowding) X, (SELECT county_code, (SUM(cases)/C.population) * 100 as percent_infected_per_county FROM CountyCases CC join County C on CC.county_code = C.fips GROUP BY county_code) Y),
-            B as (SELECT county_code, (SUM(cases)/C.population) * 100 as percent_infected_per_county
-            FROM CountyCases CC join County C on CC.county_code = C.fips
-            GROUP BY county_code)
-            SELECT SUM( (O.percentage - overcrowd_avg) * (percent_infected_per_county - infect_avg) ) /
-                   ((count(*) -1) * (stddev_samp(percentage) * stddev_samp(percent_infected_per_county)))
-                    as Correlation
-            FROM Overcrowding O JOIN B on O.county_code = B.county_code, A
-            `)
-        }
+                    if (error) {
+                        console.log(error)
+                        res.json({ error: error })
+                    } else if (results) {
+                        res.json({ results: results })
+                    }
+                })
+            } else {
+                connection.query(`WITH A as (SELECT overcrowd_avg, AVG(percent_infected_per_county) as infect_avg
+                FROM (SELECT AVG(percentage) as overcrowd_avg
+                FROM Overcrowding) X, (SELECT county_code, (SUM(cases)/C.population) * 100 as percent_infected_per_county FROM CountyCases CC join County C on CC.county_code = C.fips GROUP BY county_code) Y),
+                B as (SELECT county_code, (SUM(cases)/C.population) * 100 as percent_infected_per_county
+                FROM CountyCases CC join County C on CC.county_code = C.fips
+                GROUP BY county_code)
+                SELECT SUM( (O.percentage - overcrowd_avg) * (percent_infected_per_county - infect_avg) ) /
+                    ((count(*) -1) * (stddev_samp(percentage) * stddev_samp(percent_infected_per_county)))
+                        as Correlation
+                FROM Overcrowding O JOIN B on O.county_code = B.county_code, A
+                `, function(error, results, fields) {
+                    if (error) {
+                        console.log(error)
+                        res.json({ error: error })
+                    } else if (results) {
+                        res.json({ results: results })
+                    }
+                })
+            }
+        } else if (category = 'poverty') {
+            if (type = 'rates') {
+                connection.query(`WITH A as (SELECT county_code, (SUM(cases)/C.population) * 100 as percent_infected_per_county
+                FROM CountyCases CC join County C on CC.county_code = C.fips
+                GROUP BY county_code)
+                SELECT P.county_code, P.poverty/percent_infected_per_county as poverty_to_cases_rate
+                FROM Poverty P JOIN A on P.county_code = A.county_code
+                WHERE P.county_code = ${county_code}
+                `,function(error, results, fields) {
+                    if (error) {
+                        console.log(error)
+                        res.json({ error: error })
+                    } else if (results) {
+                        res.json({ results: results })
+                    }
+                })
+            } else {
+                connection.query(`WITH A as (SELECT overcrowd_avg, AVG(percent_infected_per_county) as infect_avg
+                FROM (SELECT AVG(percentage) as overcrowd_avg
+                FROM Overcrowding) X, (SELECT county_code, (SUM(cases)/C.population) * 100 as percent_infected_per_county FROM CountyCases CC join County C on CC.county_code = C.fips GROUP BY county_code) Y),
+                B as (SELECT county_code, (SUM(cases)/C.population) * 100 as percent_infected_per_county
+                FROM CountyCases CC join County C on CC.county_code = C.fips
+                GROUP BY county_code)
+                SELECT SUM( (O.percentage - overcrowd_avg) * (percent_infected_per_county - infect_avg) ) /
+                    ((count(*) -1) * (stddev_samp(percentage) * stddev_samp(percent_infected_per_county)))
+                        as Correlation
+                FROM Overcrowding O JOIN B on O.county_code = B.county_code, A
+                `, function(error, results, fields) {
+                    if (error) {
+                        console.log(error)
+                        res.json({ error: error })
+                    } else if (results) {
+                        res.json({ results: results })
+                    }
+                })
+            }
     
-    }
+        }
+    })
     
 }
 

@@ -12,6 +12,8 @@ import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
+import react from 'react';
+import FlipNumbers from 'react-flip-numbers';
 
 
 // import Dropdown from 'react-bootstrap/Dropdown';
@@ -57,7 +59,7 @@ const CovidPage = () => {
 	// Don't worry about this reloading twice. It has no effect on the rendering, which
 	// is what actually counts. Specifically, the JSX in the return block below.
     console.log(covidData)
-
+//<FlipNumbers play height={40} width={40} color="black" background="white" duration={(covidData && covidData[0].cases_per_100k ? covidData[0].cases_per_100k.toFixed(0) : 0)/70} numbers={covidData && covidData[0].cases_per_100k ? covidData[0].cases_per_100k.toFixed(0) : 0}/>
 	return (
 		<div>
 		<FormControl fullWidth>
@@ -67,7 +69,8 @@ const CovidPage = () => {
 				id="demo-simple-select"
 				value={county}
 				label="County"
-				onChange={onChangeCounty}>
+				onChange={onChangeCounty}
+				MenuProps={{ PaperProps: { sx: { maxHeight: 200 } } }}>
 				{
 					counties?.map(({county_name, index}) => (
 						<MenuItem key={index} value={county_name}>{county_name}</MenuItem>
@@ -97,7 +100,7 @@ const CovidPage = () => {
 				<CardContent>
 					<Typography variant="h5" color="text.primary" gutterBottom>
 						Cases Per 100k
-					</Typography>
+					</Typography>			
 					<Typography variant="h5" component="div">
 						{covidData && covidData[0].cases_per_100k ? covidData[0].cases_per_100k.toFixed(2) : 0}
 					</Typography>
@@ -106,7 +109,6 @@ const CovidPage = () => {
 			}</Card>
 			</Box>
 		:  null }
-
 		<p></p>{ queryType == 'cases' ?
 			<Box sx={{ minWidth: 150, maxWidth: 300 }}>
 			<Card variant="outlined">{
@@ -115,6 +117,7 @@ const CovidPage = () => {
 					<Typography variant="h5" color="text.primary" gutterBottom>
 						Vaccinations Per 100k
 					</Typography>
+		
 					<Typography variant="h5" component="div">
 						{covidData && covidData[0].vaccinated_per_100k ? covidData[0].vaccinated_per_100k.toFixed(2) : 0}
 					</Typography>

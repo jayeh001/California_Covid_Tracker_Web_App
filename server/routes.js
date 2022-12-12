@@ -48,20 +48,29 @@ async function covid(req, res) {
         console.log(req.query.county_name)
         county_code = results[0].fips
         if (type == 'cases') {
-            connection.query(`WITH Per_100k_Vaccination AS (SELECT (v.vaccinated / c.population * 100000) AS vaccinated_per_100k
-            FROM CountyVacc v JOIN County c ON v.county_code = c.fips
-            WHERE fips = ${county_code} AND v.Date >= ALL (SELECT Date FROM CountyVacc WHERE county_code = ${county_code})),
+            connection.query(`WITH Vaccination AS (SELECT vaccinated
+                FROM CountyVacc
+                WHERE county_code = ${county_code}
+                ORDER BY date DESC
+                LIMIT 1),
 
-            Per_100k_Cases AS (SELECT cases AS cases_per_100k
-            FROM CountyCases cc JOIN County c ON cc.county_code = c.fips
-            WHERE fips = ${county_code} AND cc.Date >= ALL (SELECT Date FROM CountyCases WHERE county_code = ${county_code})),
+                Cases_Per_100k AS (SELECT cases
+                FROM CountyCases
+                WHERE county_code = ${county_code}
+                LIMIT 1),
 
-            Per_100k_Deaths AS (SELECT (d.cases / c.population * 100000) AS deaths_per_100k
-            FROM CountyDeath d JOIN County c ON d.county_code = c.fips
-            WHERE fips = ${county_code} AND d.Date >= ALL (SELECT date FROM CountyDeath WHERE county_code = ${county_code}))
+                Deaths AS (SELECT cases, county_code
+                FROM CountyDeath
+                WHERE county_code = ${county_code}
+                ORDER BY date DESC
+                LIMIT 1),
 
-            SELECT v.vaccinated_per_100k AS vaccinated_per_100k, c.cases_per_100k AS cases_per_100k, d.deaths_per_100k AS deaths_per_100k
-            FROM Per_100k_Vaccination v JOIN Per_100k_Cases c JOIN Per_100k_Deaths d;`, function(error, results, fields) {
+                Population AS (SELECT population
+                FROM County
+                WHERE fips = ${county_code})
+
+                SELECT (v.vaccinated / p.population * 100000) AS vaccinated_per_100k, c.cases AS cases_per_100k, (d.cases / p.population * 100000) AS deaths_per_100k
+                FROM Vaccination v JOIN Cases_Per_100k c JOIN Deaths d JOIN Population p`, function(error, results, fields) {
                 
                 if (error) {
                     console.log(error)
@@ -72,23 +81,22 @@ async function covid(req, res) {
                 }
             }); 
         } else {
-            connection.query(`WITH Averages AS (SELECT cases_avg, deaths_avg
-                FROM (SELECT AVG(cases) AS cases_avg
-                      FROM CountyCases WHERE county_code = ${county_code} GROUP BY county_code) X,
+            connection.query(`WITH Averages AS (SELECT cases_avg, deaths_avg, county_code
+                FROM (SELECT AVG(cases) AS cases_avg, county_code
+                      FROM CountyCases GROUP BY county_code) X,
                      (SELECT AVG(cases) AS deaths_avg
-                      FROM CountyDeath WHERE county_code = ${county_code} GROUP BY county_code) Y),
+                      FROM CountyDeath GROUP BY county_code) Y),
 
-                Cases AS (SELECT cases, date
-                        FROM CountyCases
-                        WHERE county_code = ${county_code}),
+                Cases AS (SELECT cases, date, county_code
+                        FROM CountyCases WHERE county_code = ${county_code}),
 
-                Deaths AS (SELECT cases, date
-                            FROM CountyDeath
-                            WHERE county_code = ${county_code})
+                Deaths AS (SELECT cases, date, county_code
+                            FROM CountyDeath WHERE county_code = ${county_code})
 
                 SELECT SUM((c.cases - a.cases_avg) * (d.cases - a.deaths_avg))/
                         ((count(*) - 1) * (stddev_samp(c.cases) * stddev_samp(d.cases))) AS Correlation
-                FROM Cases c JOIN Deaths d ON c.date = d.date, Averages a`, function(error,results, fields) {
+                FROM Cases c  JOIN Deaths d ON c.date = d.date, Averages a
+                WHERE a.county_code = ${county_code};`, function(error,results, fields) {
                 if (error) {
                     console.log(error)
                     res.json({ error: error })

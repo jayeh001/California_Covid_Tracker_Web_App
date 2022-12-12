@@ -118,9 +118,6 @@ return (
 								<Typography variant="p" component="div" color="#555">
 									Population: {covidData && covidData[0].population ? covidData[0].population : 0}
 								</Typography>
-								<Typography variant = "p" component="div" color="#fff">
-									s
-								</Typography>
 								<Typography variant = "h5" component="div">
 								Description: 
 								</Typography>
@@ -134,36 +131,33 @@ return (
 							</CardContent>
 							</React.Fragment>
 						}</Card>
-						
 					</Box>
-
 				</Grid>
+
 				<Grid item xs={2}>
 					<p></p>{ queryType == 'cases' ? 
-						<Box sx={{ minWidth: 150, maxWidth: 300 }}>
-							<CardMedia
-								height="300"
-								component="img"
-								image="/covid.png"
-								alt="covid symbol"/>
-							<Card variant="outlined">{
-							<React.Fragment>
-								<CardContent>
-									<Typography variant="h5" color="text.primary" gutterBottom>
-										Cases Per 100k
-									</Typography>			
-									<Typography variant="h5" component="div">
-										{covidData && covidData[0].cases_per_100k ? covidData[0].cases_per_100k.toFixed(2) : 0}
-									</Typography>
-									<Typography variant="p" component="div" color="#555"><br/>
-										Date: {covidData && covidData[0].casesDate ? covidData[0].casesDate : 0}
-									</Typography>
-						
-								</CardContent>
-							</React.Fragment>
-							}</Card>
-						</Box>
-					:  null }
+					<Box sx={{ minWidth: 150, maxWidth: 300 }}>
+						<CardMedia
+							height="300"
+							component="img"
+							image="/covid.png"
+							alt="covid symbol"/>
+						<Card variant="outlined">{
+						<React.Fragment>
+							<CardContent>
+								<Typography variant="h5" color="text.primary" gutterBottom>
+									Cases Per 100k
+								</Typography>			
+								<Typography variant="h5" component="div">
+									{covidData && covidData[0].cases_per_100k ? covidData[0].cases_per_100k.toFixed(2) : 0}
+								</Typography>
+								<Typography variant="p" component="div" color="#555"><br/>
+									Date: {covidData && covidData[0].casesDate ? covidData[0].casesDate : 0}
+								</Typography>
+							</CardContent>
+						</React.Fragment>
+						}</Card>
+					</Box> :  null }
 
 					{ queryType == 'correlation' ? 
 					<Box sx={{ minWidth: 150, maxWidth: 300 }}>
@@ -181,71 +175,67 @@ return (
 							<Typography variant="h5" component="div">
 								{covidData && covidData[0].Correlation ? covidData[0].Correlation.toFixed(4) : 0}
 							</Typography>
-
 						</CardContent>
 						</React.Fragment>
 					}</Card>
 					</Box> : null}
-					</Grid>
+				</Grid>
+
 				<Grid item xs={2}>	
 					<p></p>{ queryType == 'cases' ?
-						<Box sx={{ minWidth: 150, maxWidth: 300 }}>
-						<CardMedia
-							height="300"
-							component="img"
-							image="/vaccine.png"
-							alt="vaccine symbol"/>
+					<Box sx={{ minWidth: 150, maxWidth: 300 }}>
+					<CardMedia
+						height="300"
+						component="img"
+						image="/vaccine.png"
+						alt="vaccine symbol"/>
 													
-						<Card variant="outlined">{
-						<React.Fragment>
-							<CardContent>
-								<Typography variant="h5" color="text.primary" gutterBottom>
-									Vaccinations Per 100k
-								</Typography>
-					
-								<Typography variant="h5" component="div">
-									{covidData && covidData[0].vaccinated_per_100k ? covidData[0].vaccinated_per_100k.toFixed(2) : 0}
-								</Typography>
-								<Typography variant="p" component="div" color="#555"><br/>
-									Date: {covidData && covidData[0].vaccDate ? covidData[0].vaccDate : 0}
-								</Typography>
-							</CardContent>
-						</React.Fragment>
-						}</Card>
-						</Box> : null }
-			
+					<Card variant="outlined">{
+					<React.Fragment>
+						<CardContent>
+							<Typography variant="h5" color="text.primary" gutterBottom>
+								Vaccinations Per 100k
+							</Typography>
+							<Typography variant="h5" component="div">
+								{covidData && covidData[0].vaccinated_per_100k ? covidData[0].vaccinated_per_100k.toFixed(2) : 0}
+							</Typography>
+							<Typography variant="p" component="div" color="#555"><br/>
+								Date: {covidData && covidData[0].vaccDate ? covidData[0].vaccDate : 0}
+							</Typography>
+						</CardContent>
+					</React.Fragment>
+					}</Card>
+					</Box> : null }
 				</Grid>
+
 				<Grid item xs={2}>
 					<p></p>{ queryType == 'cases' ? 
-						<Box sx={{ minWidth: 150, maxWidth: 300 }}>
-						<CardMedia
-							height="300"
-							component="img"
-							image="/coffin.png"
-							alt="coffin symbol"/>
-						<Card variant="outlined">{<React.Fragment>
-							<CardContent>
-								<Typography variant="h5" color="text.primary" gutterBottom>
-									Deaths Per 100k
-								</Typography>
-								<Typography variant="h5" component="div">
-									{covidData && covidData[0].deaths_per_100k ? covidData[0].deaths_per_100k.toFixed(2) : 0}
-								</Typography>
-								<Typography variant="p" component="div" color="#555"><br/>
-									Date: {covidData && covidData[0].deathsDate ? covidData[0].deathsDate : 0}
-								</Typography>
-							</CardContent>
-						</React.Fragment>
-						}</Card>
-						</Box> : null }
+					<Box sx={{ minWidth: 150, maxWidth: 300 }}>
+					<CardMedia
+						height="300"
+						component="img"
+						image="/coffin.png"
+						alt="coffin symbol"/>
+					<Card variant="outlined">{<React.Fragment>
+						<CardContent>
+							<Typography variant="h5" color="text.primary" gutterBottom>
+								Deaths Per 100k
+							</Typography>
+							<Typography variant="h5" component="div">
+								{covidData && covidData[0].deaths_per_100k ? covidData[0].deaths_per_100k.toFixed(2) : 0}
+							</Typography>
+							<Typography variant="p" component="div" color="#555"><br/>
+								Date: {covidData && covidData[0].deathsDate ? covidData[0].deathsDate : 0}
+							</Typography>
+						</CardContent>
+					</React.Fragment>
+					}</Card>
+					</Box> : null }
 				</Grid>
 			</Grid>
 		</Box>
-		
 		</div>
 
-		
-		
     )
 }
 

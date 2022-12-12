@@ -48,29 +48,30 @@ async function covid(req, res) {
         console.log(req.query.county_name)
         county_code = results[0].fips
         if (type == 'cases') {
-            connection.query(`WITH Vaccination AS (SELECT vaccinated
+            connection.query(`WITH Vaccination AS (SELECT vaccinated, date
                 FROM CountyVacc
                 WHERE county_code = ${county_code}
                 ORDER BY date DESC
                 LIMIT 1),
 
-                Cases_Per_100k AS (SELECT cases
+                Cases_Per_100k AS (SELECT cases, date
                 FROM CountyCases
                 WHERE county_code = ${county_code}
+                ORDER by date DESC
                 LIMIT 1),
 
-                Deaths AS (SELECT cases, county_code
+                Deaths AS (SELECT cases, county_code, date
                 FROM CountyDeath
                 WHERE county_code = ${county_code}
                 ORDER BY date DESC
                 LIMIT 1),
 
-                Population AS (SELECT population
+                Population AS (SELECT population, county_name, description
                 FROM County
                 WHERE fips = ${county_code})
 
-                SELECT (v.vaccinated / p.population * 100000) AS vaccinated_per_100k, c.cases AS cases_per_100k, (d.cases / p.population * 100000) AS deaths_per_100k
-                FROM Vaccination v JOIN Cases_Per_100k c JOIN Deaths d JOIN Population p`, function(error, results, fields) {
+                SELECT d.county_code as fips, p.description AS description, p.county_name as name, p.population as population, (v.vaccinated / p.population * 100000) AS vaccinated_per_100k, v.date AS vaccDate, c.cases AS cases_per_100k, c.date AS casesDate, (d.cases / p.population * 100000) AS deaths_per_100k, d.date AS deathsDate
+                FROM Vaccination v JOIN Cases_Per_100k c JOIN Deaths d JOIN Population p;`, function(error, results, fields) {
                 
                 if (error) {
                     console.log(error)
@@ -83,20 +84,22 @@ async function covid(req, res) {
         } else {
             connection.query(`WITH Averages AS (SELECT cases_avg, deaths_avg, county_code
                 FROM (SELECT AVG(cases) AS cases_avg, county_code
-                      FROM CountyCases GROUP BY county_code) X,
+                      FROM CountyCases WHERE date < '2022-01-01' AND county_code = ${county_code} GROUP BY county_code) X,
                      (SELECT AVG(cases) AS deaths_avg
-                      FROM CountyDeath GROUP BY county_code) Y),
+                      FROM CountyDeath WHERE date < '2022-01-01' AND county_code = ${county_code} GROUP BY county_code) Y),
 
                 Cases AS (SELECT cases, date, county_code
-                        FROM CountyCases WHERE county_code = ${county_code}),
+                        FROM CountyCases WHERE county_code = ${county_code} AND date < '2022-01-01'),
 
                 Deaths AS (SELECT cases, date, county_code
-                            FROM CountyDeath WHERE county_code = ${county_code})
+                            FROM CountyDeath WHERE county_code = ${county_code}  AND date < '2022-01-01'),
+
+                County_Pop AS (SELECT county_name, population, description
+                               FROM County WHERE fips = ${county_code})
 
                 SELECT SUM((c.cases - a.cases_avg) * (d.cases - a.deaths_avg))/
-                        ((count(*) - 1) * (stddev_samp(c.cases) * stddev_samp(d.cases))) AS Correlation
-                FROM Cases c  JOIN Deaths d ON c.date = d.date, Averages a
-                WHERE a.county_code = ${county_code};`, function(error,results, fields) {
+                        ((count(*) - 1) * (stddev_samp(c.cases) * stddev_samp(d.cases))) AS Correlation, p.county_name AS name, p.population AS population, p.description AS description
+                FROM Cases c  JOIN Deaths d ON c.date = d.date, Averages a, County_Pop p;`, function(error,results, fields) {
                 if (error) {
                     console.log(error)
                     res.json({ error: error })

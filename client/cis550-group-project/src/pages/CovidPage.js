@@ -1,25 +1,16 @@
+import * as React from 'react';
 import { useCallback, useEffect } from "react";
-import { getCovid, getCounties } from "../fetcher";
 import { useState } from "react";
-import { FormControl } from '@mui/material';
-import { InputLabel } from '@mui/material';
-import { Select } from '@mui/material';
-import { MenuItem } from '@mui/material';
-import { Grid } from '@mui/material';
+
+import { getCovid, getCounties } from "../fetcher";
+
+import { FormControl, InputLabel, Select, MenuItem, Grid } from '@mui/material';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia'
-import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import * as React from 'react';
-import react from 'react';
-import FlipNumbers from 'react-flip-numbers';
 
-
-// import Dropdown from 'react-bootstrap/Dropdown';
-// import DropdownButton from 'react-bootstrap/DropdownButton';
 const styles = {
 	back: {
 		backgroundImage: "url(https://foundrybc.ca/wp-content/uploads/2020/08/Foundry-COVID-19-Symbol-300x300.png)"
@@ -55,7 +46,7 @@ const CovidPage = () => {
 		console.log(event.target.value)
 		setQueryType(event.target.value)
 		console.log(queryType)
-       getCovid(county, event.target.value).then(res => {
+        getCovid(county, event.target.value).then(res => {
             setCovidData(res.results)
         })
         console.log('changing')
@@ -118,8 +109,11 @@ return (
 								<Typography variant="p" component="div" color="#555">
 									Population: {covidData && covidData[0].population ? covidData[0].population : 0}
 								</Typography>
+								<Typography variant = "p" component="div" color="#fff">
+									s
+								</Typography>
 								<Typography variant = "h5" component="div">
-								Description: 
+									Description: 
 								</Typography>
 								<Typography variant="p" component="div" color="#222">
 									{covidData && covidData[0].description ? covidData[0].description : 0}
@@ -189,7 +183,6 @@ return (
 						component="img"
 						image="/vaccine.png"
 						alt="vaccine symbol"/>
-													
 					<Card variant="outlined">{
 					<React.Fragment>
 						<CardContent>

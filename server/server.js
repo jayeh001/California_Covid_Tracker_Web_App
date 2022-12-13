@@ -2,7 +2,6 @@ const express = require('express');
 const mysql      = require('mysql');
 var cors = require('cors')
 
-
 const routes = require('./routes')
 const config = require('./config.json')
 
@@ -18,7 +17,7 @@ app.get('/hello', routes.hello)
 app.get('/covid/:type', routes.covid)
 
 // Route 3 - register as GET 
-app.get('/correlations/:category', routes.correlations)
+app.get('/correlations/:category/:type', routes.correlations)
 
 // Route 4 - register as GET 
 app.get('/timeline', routes.timeline)

@@ -115,10 +115,12 @@ async function correlations(req, res) {
     var category = req.params.category ? req.params.category : 'overcrowding'
     //const county = req.query.type ? req.query.type : "Alameda"
     var type = req.params.type ? req.params.type : 'rate'
-    var county_name = req.query.county_name ? req.query.type :'Alameda'
-    console.log('received this: ', category) 
-    connection.query(`SELECT fips FROM County WHERE county_name= '${county}'`, function(error, results, fields){
+    var county_name = req.params.county_name ? req.params.type :'Alameda'
+    console.log('received this: ', category, type, county_name) 
+    connection.query(`SELECT fips FROM County WHERE county_name= '${county_name}'`, function(error, results, fields){
+        console.log('before county code')
         county_code = results[0].fips
+        console.log('this is county code', county_code)
         if (category = 'overcrowding') {
             if (type = 'rates') {
                 connection.query(`WITH X as (SELECT county_code, (SUM(cases)/C.population) * 100 as percent_infected

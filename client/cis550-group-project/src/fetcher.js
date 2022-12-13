@@ -8,9 +8,12 @@ const getCovid = async (county_name, type) => {
 }
 
 const getCorrelations = async (category, type, county_name) => {
+    console.log('inside getCorrelations fetcher function. Before await fetch call')
     var res = await fetch(`http://${config.server_host}:${config.server_port}/correlations/${category}/${type}?county_name=${county_name}`, {
         method: 'GET',
     })
+    console.log('after await fetch call')
+    console.log(res)
     return res.json()
 }
 

@@ -135,7 +135,7 @@ async function correlations(req, res) {
             if (type == 'rates') {
                 connection.query(`WITH X as (SELECT county_code, (SUM(cases)/C.population) * 100 as percent_infected
             FROM CountyCases CC join County C on CC.county_code = C.fips
-            GROUP BY county_code) SELECT O.county_code, O.percentage/percent_infected as overcrowding_to_cases_rate
+            GROUP BY county_code) SELECT O.county_code, O.percentage/percent_infected as cases_rate
             FROM Overcrowding O JOIN X on O.county_code = X.county_code
             WHERE O.county_code = ${county_code}
             `, function(error, results, fields) {
@@ -172,7 +172,7 @@ async function correlations(req, res) {
                 connection.query(`WITH A as (SELECT county_code, (SUM(cases)/C.population) * 100 as percent_infected_per_county
                 FROM CountyCases CC join County C on CC.county_code = C.fips
                 GROUP BY county_code)
-                SELECT P.county_code, P.poverty/percent_infected_per_county as poverty_to_cases_rate
+                SELECT P.county_code, P.poverty/percent_infected_per_county as cases_rate
                 FROM Poverty P JOIN A on P.county_code = A.county_code
                 WHERE P.county_code = ${county_code}
                 `,function(error, results, fields) {

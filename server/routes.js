@@ -126,14 +126,13 @@ async function correlations(req, res) {
     var category = req.params.category ? req.params.category : 'overcrowding'
     //const county = req.query.type ? req.query.type : "Alameda"
     var type = req.params.type ? req.params.type : 'rate'
-    var county_name = req.params.county_name ? req.params.type :'Alameda'
+    var county_name = req.query.county_name ? req.query.county_name :'Alameda'
     console.log('received this: ', category, type, county_name) 
     connection.query(`SELECT fips FROM County WHERE county_name= '${county_name}'`, function(error, results, fields){
-        console.log('before county code')
         county_code = results[0].fips
         console.log('this is county code', county_code)
-        if (category = 'overcrowding') {
-            if (type = 'rates') {
+        if (category == 'overcrowding') {
+            if (type == 'rates') {
                 connection.query(`WITH X as (SELECT county_code, (SUM(cases)/C.population) * 100 as percent_infected
             FROM CountyCases CC join County C on CC.county_code = C.fips
             GROUP BY county_code) SELECT O.county_code, O.percentage/percent_infected as overcrowding_to_cases_rate
@@ -147,8 +146,8 @@ async function correlations(req, res) {
                         res.json({ results: results })
                     }
                 })
-            } else if (type = 'correlation') {
-                console.log('wtfffff')
+            } else{
+                console.log('INSIDE OF OVERCROWDING CORRELATION')
                 connection.query(`WITH A as (SELECT overcrowd_avg, AVG(percent_infected_per_county) as infect_avg
                 FROM (SELECT AVG(percentage) as overcrowd_avg
                 FROM Overcrowding) X, (SELECT county_code, (SUM(cases)/C.population) * 100 as percent_infected_per_county FROM CountyCases CC join County C on CC.county_code = C.fips GROUP BY county_code) Y),
@@ -168,8 +167,8 @@ async function correlations(req, res) {
                     }
                 })
             }
-        } else if (category = 'poverty') {
-            if (type = 'rates') {
+        } else if (category == 'poverty') {
+            if (type == 'rates') {
                 connection.query(`WITH A as (SELECT county_code, (SUM(cases)/C.population) * 100 as percent_infected_per_county
                 FROM CountyCases CC join County C on CC.county_code = C.fips
                 GROUP BY county_code)

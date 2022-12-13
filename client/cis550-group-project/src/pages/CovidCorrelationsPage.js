@@ -8,6 +8,7 @@ import { useState } from "react";
 import { FormControl, InputLabel, Select, MenuItem, Grid, CardHeader } from '@mui/material';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
+import CardMedia from '@mui/material/CardMedia'
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
@@ -48,54 +49,22 @@ const CovidCorrelations = () => {
 		console.log('the value is: ' + event.target.value)
 		setCounty(event.target.value)
 		// console.log('county changed to: ' + county)
-        getCorrelations(category,'rate',event.target.value).then(res => {
+        getCorrelations(category,'rates',event.target.value).then(res => {
             setCorrData(res.results)
         })
 	}
 	function onChangeCategory(event) {
 		setCategory(event.target.value)
-		getCorrelations(event.target.value,'rate',county).then(res => {
+		getCorrelations(event.target.value,'rates',county).then(res => {
             setCorrData(res.results)
         })
 	}
 	console.log('corrdata',corrData)
     return (
         <div>
-        <p></p>
-		{  
-			<Box sx={{flexGrow:2}}>
-				<Grid container>
-					<Grid item xs={6}>
-						<Card>
-							<CardContent>
-								<Typography variant="h5" color="text.primary" gutterBottom>
-									Overcrowding Correlation
-								</Typography>			
-								<Typography variant="h5" component="div">
-									Correlation is {overCorr? overCorr[0].Correlation: null}
-								</Typography>
-							</CardContent>
-						</Card>
-						
-					</Grid>
-					<Grid item xs={6}>
-						<Card>
-							<CardContent>
-								<Typography variant="h5" color="text.primary" gutterBottom>
-									Poverty Correlation
-								</Typography>			
-								<Typography variant="h5" component="div">
-									Correlation is {povCorr? povCorr[0].Correlation: null}
-								</Typography>
-							</CardContent>
-						</Card>
-
-					</Grid>
-				</Grid>
-			</Box>
-		 }
-        <p></p>
-        <FormControl fullWidth>
+		<p></p>
+	
+		<FormControl fullWidth>
 			<InputLabel id="demo-simple-select-label">County</InputLabel>
 			<Select
 				labelId="demo-simple-select-label"
@@ -110,7 +79,9 @@ const CovidCorrelations = () => {
 				}
 			</Select>
 		</FormControl>
+		
 		<p></p>  
+
 		<FormControl fullWidth>
 			<InputLabel id="demo-simple-select-label">Category</InputLabel>
 			<Select
@@ -119,22 +90,84 @@ const CovidCorrelations = () => {
 				value={category}
 				label="County"
 				onChange={onChangeCategory}>				
-				<MenuItem value={'overcrowding'}>overcrowding</MenuItem>
-				<MenuItem value={'poverty'}>poverty</MenuItem>			
+				<MenuItem value={'overcrowding'}>Overcrowding</MenuItem>
+				<MenuItem value={'poverty'}>Poverty</MenuItem>			
 			</Select>
 		</FormControl>
-		<Box>		
-			<Grid container>
-					<Grid item xs={12}>
-						<Card>
-							<CardContent>			
+	
+        <p></p>
+		{  
+	
+				<Grid container space={2}>
+					<Grid item xs={3}>
+					<Box sx={{ minWidth: 150, maxWidth: 300 }}>
+						<CardMedia
+								height="300"
+								component="img"
+								image="/overpopulation.png"
+								alt="overpopulation symbol"/>
+						<Card variant="outlined">
+							<CardContent>
+								<Typography variant="h5" color="text.primary" gutterBottom>
+									Overcrowding Correlation
+								</Typography>			
 								<Typography variant="h5" component="div">
-									{corrData? corrData[0].overcrowding_to_cases_rate : null}
+									{overCorr? overCorr[0].Correlation: null}
 								</Typography>
 							</CardContent>
 						</Card>
-						
+					</Box>
 					</Grid>
+					
+					<Grid item xs={1}></Grid>
+					<Grid item xs={3}>
+					<Box sx={{ minWidth: 150, maxWidth: 300 }}>
+						<CardMedia
+							height="300"
+							component="img"
+							image="/poverty.png"
+							alt="poverty symbol"/>
+						<Card variant="outlined">
+							<CardContent>
+								<Typography variant="h5" color="text.primary" gutterBottom>
+									Poverty Correlation
+								</Typography>			
+								<Typography variant="h5" component="div">
+									{povCorr? povCorr[0].Correlation: null}
+								</Typography>
+							</CardContent>
+						</Card>
+					</Box>
+					</Grid>
+
+					<Grid item xs={1}></Grid>
+					<Grid item xs={3}>
+						<Box sx={{ minWidth: 150, maxWidth: 300 }}>
+							<CardMedia
+								height="300"
+								component="img"
+								image="/ratio.svg"
+								alt="ratio symbol"/>
+							<Card variant="outlined">
+								<CardContent>	
+									<Typography variant="h5" component="div" gutterBottom>
+										Ratio of Category Score to Cases
+									</Typography>		
+									<Typography variant="h5" component="div">
+										{corrData? corrData[0].cases_rate : null}
+									</Typography>
+								</CardContent>
+							</Card>
+						</Box>
+					</Grid>
+				</Grid>
+	
+		 }
+        
+		<p></p>
+		<Box sx={{ minWidth: 1200, maxWidth: 1700 }}>		
+			<Grid container>
+					
 			</Grid>
 		</Box>
 

@@ -184,16 +184,16 @@ async function correlations(req, res) {
                     }
                 })
             } else {
-                connection.query(`WITH A as (SELECT overcrowd_avg, AVG(percent_infected_per_county) as infect_avg
-                FROM (SELECT AVG(percentage) as overcrowd_avg
-                FROM Overcrowding) X, (SELECT county_code, (SUM(cases)/C.population) * 100 as percent_infected_per_county FROM CountyCases CC join County C on CC.county_code = C.fips GROUP BY county_code) Y),
+                connection.query(`WITH A as (SELECT poverty_avg, AVG(percent_infected_per_county) as infect_avg
+                FROM (SELECT AVG(poverty) as poverty_avg
+                FROM Poverty) X, (SELECT county_code, (SUM(cases)/C.population) * 100 as percent_infected_per_county FROM CountyCases CC join County C on CC.county_code = C.fips GROUP BY county_code) Y),
                 B as (SELECT county_code, (SUM(cases)/C.population) * 100 as percent_infected_per_county
                 FROM CountyCases CC join County C on CC.county_code = C.fips
                 GROUP BY county_code)
-                SELECT SUM( (O.percentage - overcrowd_avg) * (percent_infected_per_county - infect_avg) ) /
-                    ((count(*) -1) * (stddev_samp(percentage) * stddev_samp(percent_infected_per_county)))
+                SELECT SUM( (P.poverty - poverty_avg) * (percent_infected_per_county - infect_avg) ) /
+                    ((count(*) -1) * (stddev_samp(poverty) * stddev_samp(percent_infected_per_county)))
                         as Correlation
-                FROM Overcrowding O JOIN B on O.county_code = B.county_code, A
+                FROM Poverty P JOIN B on P.county_code = B.county_code, A;
                 `, function(error, results, fields) {
                     if (error) {
                         console.log(error)

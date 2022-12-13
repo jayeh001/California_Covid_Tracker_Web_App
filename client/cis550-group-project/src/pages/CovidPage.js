@@ -30,6 +30,7 @@ const CovidPage = () => {
 		getCounties().then(res => {
 			setCounties(res.results)
 		})
+		
     }, [])
 
 

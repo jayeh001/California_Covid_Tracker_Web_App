@@ -1,10 +1,11 @@
 import { useEffect } from "react";
 import { getCorrelations,getCounties } from "../fetcher";
 import { useState } from "react";
-import { FormControl } from '@mui/material';
-import { InputLabel } from '@mui/material';
-import { Select } from '@mui/material';
-import { MenuItem } from '@mui/material';
+// import { FormControl } from '@mui/material';
+// import { InputLabel } from '@mui/material';
+// import { Select } from '@mui/material';
+// import { MenuItem } from '@mui/material';
+import { FormControl, InputLabel, Select, MenuItem, Grid, CardHeader } from '@mui/material';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -22,16 +23,21 @@ const CovidCorrelations = () => {
 	const [counties, setCounties] = useState();
     const [category, setCategory] = useState('overcrowding')
     const [type,setType] = useState('rate')
-
-    const overcrowdingCorr = getCorrelations("overcrowding","correlation","Alameda")
-    console.log('printing overcrowdingCorr')
-    console.log(overcrowdingCorr)
+	const [overCorr,setOvercrowdCorr] = useState()
+	const [povCorr,setPovCorr] = useState()
 	   
     useEffect(() => {
         // TODO: replace this with getCorrelations
         getCorrelations("overcrowding", "rates", "Alameda").then(res => {
             setCorrData(res.results)
+			
         })
+        getCorrelations("overcrowding", "correlation", "Alameda").then(res => {
+            setOvercrowdCorr(res.results)
+		})
+        getCorrelations("poverty", "correlation", "Alameda").then(res => {
+            setPovCorr(res.results)
+		})
 		getCounties().then(res => {
 			setCounties(res.results)
 		})
@@ -40,52 +46,42 @@ const CovidCorrelations = () => {
 	function onChangeCounty(event) {
 		console.log('the value is: ' + event.target.value)
 		setCounty(event.target.value)
-		console.log('county changed to: ' + county)
-        getCorrelations(category,type,event.target.vale).then(res => {
+		// console.log('county changed to: ' + county)
+        getCorrelations(category,type,event.target.value).then(res => {
             setCorrData(res.results)
         })
 		
 	}
 
 
-    console.log(corrData)
 
 
     return (
-        <div>
 
-        <p></p>{  
-			<Box sx={{ minWidth: 150, maxWidth: 400 }}>
-			<Card variant="outlined">{
-			<React.Fragment>
-				<CardContent>
-					<Typography variant="h5" color="text.primary" gutterBottom>
-                        Overcrowding Correlation
-					</Typography>
-					<Typography variant="h5" component="div">
-                        
-					</Typography>
-				</CardContent>
-			</React.Fragment>
-			}</Card>
+        <div>
+        <p></p>
+		{  
+			<Box sx={{flexGrow:2}}>
+				<Grid container>
+					<Grid item xs={6}>
+						<Card>
+							<CardContent>
+								<Typography variant="h5" color="text.primary" gutterBottom>
+									Overcrowding Correlation
+								</Typography>			
+								<Typography variant="h5" component="div">
+									Correlation is {overCorr? overCorr[0].Correlation: "LOADING"}
+								</Typography>
+
+							</CardContent>
+						</Card>
+					</Grid>
+					<Grid item xs={6}>
+					</Grid>
+				</Grid>
 			</Box>
 		 }
-         {  
-			<Box sx={{ minWidth: 150, maxWidth: 400 }}>
-			<Card variant="outlined">{
-			<React.Fragment>
-				<CardContent>
-					<Typography variant="h5" color="text.primary" gutterBottom>
-                        Overcrowding Correlation
-					</Typography>
-					<Typography variant="h5" component="div">
-					</Typography>
-				</CardContent>
-			</React.Fragment>
-			}</Card>
-			</Box>
-		 }
-            <h1>Covid Correlation Page</h1>
+        <p></p>
         <FormControl fullWidth>
 			<InputLabel id="demo-simple-select-label">County</InputLabel>
 			<Select

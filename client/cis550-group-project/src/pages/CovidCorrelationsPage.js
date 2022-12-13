@@ -22,10 +22,11 @@ const CovidCorrelations = () => {
 	const [county, setCounty] = useState('Alameda');
 	const [counties, setCounties] = useState();
     const [category, setCategory] = useState('overcrowding')
-    const [type,setType] = useState('rate')
+    // const [type,setType] = useState('rate')
 	const [overCorr,setOvercrowdCorr] = useState()
 	const [povCorr,setPovCorr] = useState()
-	   
+	
+	
     useEffect(() => {
         // TODO: replace this with getCorrelations
         getCorrelations("overcrowding", "rates", "Alameda").then(res => {
@@ -47,17 +48,18 @@ const CovidCorrelations = () => {
 		console.log('the value is: ' + event.target.value)
 		setCounty(event.target.value)
 		// console.log('county changed to: ' + county)
-        getCorrelations(category,type,event.target.value).then(res => {
+        getCorrelations(category,'rate',event.target.value).then(res => {
             setCorrData(res.results)
         })
-		
 	}
-
-
-
-
+	function onChangeCategory(event) {
+		setCategory(event.target.value)
+		getCorrelations(event.target.value,'rate',county).then(res => {
+            setCorrData(res.results)
+        })
+	}
+	console.log('corrdata',corrData)
     return (
-
         <div>
         <p></p>
 		{  
@@ -70,13 +72,24 @@ const CovidCorrelations = () => {
 									Overcrowding Correlation
 								</Typography>			
 								<Typography variant="h5" component="div">
-									Correlation is {overCorr? overCorr[0].Correlation: "LOADING"}
+									Correlation is {overCorr? overCorr[0].Correlation: null}
 								</Typography>
-
 							</CardContent>
 						</Card>
+						
 					</Grid>
 					<Grid item xs={6}>
+						<Card>
+							<CardContent>
+								<Typography variant="h5" color="text.primary" gutterBottom>
+									Poverty Correlation
+								</Typography>			
+								<Typography variant="h5" component="div">
+									Correlation is {povCorr? povCorr[0].Correlation: null}
+								</Typography>
+							</CardContent>
+						</Card>
+
 					</Grid>
 				</Grid>
 			</Box>
@@ -96,7 +109,35 @@ const CovidCorrelations = () => {
 					))
 				}
 			</Select>
-		</FormControl>  
+		</FormControl>
+		<p></p>  
+		<FormControl fullWidth>
+			<InputLabel id="demo-simple-select-label">Category</InputLabel>
+			<Select
+				labelId="demo-simple-select-label"
+				id="demo-simple-select"
+				value={category}
+				label="County"
+				onChange={onChangeCategory}>				
+				<MenuItem value={'overcrowding'}>overcrowding</MenuItem>
+				<MenuItem value={'poverty'}>poverty</MenuItem>			
+			</Select>
+		</FormControl>
+		<Box>		
+			<Grid container>
+					<Grid item xs={12}>
+						<Card>
+							<CardContent>			
+								<Typography variant="h5" component="div">
+									{corrData? corrData[0].overcrowding_to_cases_rate : null}
+								</Typography>
+							</CardContent>
+						</Card>
+						
+					</Grid>
+			</Grid>
+		</Box>
+
         </div>
     )
 }

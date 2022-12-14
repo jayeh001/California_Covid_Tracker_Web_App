@@ -23,7 +23,7 @@ app.get('/correlations/:category/:type', routes.correlations)
 app.get('/timeline/:type', routes.timeline)
 
 // Route 4.5 - register as GET
-app.get('/timelineCorr/:type', routes.timelineCorr)
+app.get('/timelineCorr', routes.timelineCorr)
 
 // Route 5 - register as GET
 app.get('/counties', routes.counties)

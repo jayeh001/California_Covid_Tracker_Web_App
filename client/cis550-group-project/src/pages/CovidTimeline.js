@@ -11,6 +11,7 @@ import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
+
 import { Line, CartesianGrid, LineChart, XAxis, YAxis, Tooltip, Legend, BarChart, Bar } from "recharts";
 import '../mystyle.module.css';
 import styles from '../mystyle.module.css';
@@ -107,14 +108,24 @@ const CovidTimeline = () => {
 
     function updateDates() {
         let [min, max] = currentValue
-        let start = moment(minDate, "YYYY-MM-DD").add(min, 'd')
+        let start = (moment(minDate, "YYYY-MM-DD").add(min, 'd'))
         let end = moment(maxDate, "YYYY-MM-DD").subtract(maxRange - max, 'd')
+        
+        startDateLabel = changeMonthIndex(formatDate(start))
+        endDateLabel = changeMonthIndex(formatDate(end))
 
-        startDateLabel = formatDate(start)
-        endDateLabel =  formatDate(end)
         setStart(startDateLabel)
         setEnd(endDateLabel)
-      
+    }
+
+    function changeMonthIndex(zeroDateLabel) {
+        let oneDateLabel = zeroDateLabel.substring(0,5)
+        var month = parseInt(zeroDateLabel.substring(5,7)) + 1
+        let oneMonth = month < 10 ? '0' + month : month
+        var day = parseInt(zeroDateLabel.substring(8,10))
+        let oneDay = day < 10 ? '0' + day : day
+        oneDateLabel += oneMonth + '-' + oneDay
+        return oneDateLabel
     }
    
     function calculateDateRange(startDateStr, endDateStr) {
@@ -123,7 +134,6 @@ const CovidTimeline = () => {
         maxRange = Math.abs(endDate.diff(startDate, 'days'))
         currentValue = [0, Math.abs(endDate.diff(startDate, 'days'))]
     }
-
 
     function tipFormatter(value) {
         let [min, max] = currentValue

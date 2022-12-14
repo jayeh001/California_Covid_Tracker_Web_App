@@ -20,7 +20,10 @@ app.get('/covid/:type', routes.covid)
 app.get('/correlations/:category/:type', routes.correlations)
 
 // Route 4 - register as GET 
-app.get('/timeline', routes.timeline)
+app.get('/timeline/:type', routes.timeline)
+
+// Route 4.5 - register as GET
+app.get('/timelineCorr/:type', routes.timelineCorr)
 
 // Route 5 - register as GET
 app.get('/counties', routes.counties)

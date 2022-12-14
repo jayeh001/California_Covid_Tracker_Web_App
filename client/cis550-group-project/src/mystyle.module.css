@@ -1,0 +1,132 @@
+.divstyle{
+    flex-grow: 1;
+    width: 100%;
+}
+.text {
+    color: rgb(9, 6, 120);
+    font-size: 30px;
+    font-weight: 'bold';
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 10px;
+    padding-left: 10px;
+}
+
+.text_2{
+    color: rgb(0, 0, 0);
+    font-size: 30px;
+    font-weight: 'bold';
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 10px;
+    padding-left: 10px;
+}
+
+.text:hover, .listyle:hover{
+    color:#087aaf;
+    cursor: pointer;
+}
+
+.ulstyle{
+    /* list-style-type: ">"; */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.listyle{
+    color: rgb(9, 6, 120);
+    font-size: 30px;
+    list-style-type: none;
+    text-align: left;
+}
+
+.container_2 {
+    background-color: rgb(223, 233, 235);
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 200px;
+    height: 500px;
+}
+
+.container {
+    /* background-color: rgb(0, 191, 255); */
+    /* color: rgb(0, 191, 255);  */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 200px;
+}
+
+.spanstyle{
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+
+.row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 50px;
+}
+
+.slidebar{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 50px;
+}
+
+.slidebarrow{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.box{
+    height: 370px;
+    width: 300px;
+    /* display: flex;
+    justify-content: center;
+    align-items: center; */
+    margin: 10px;
+    background-color:rgb(19, 15, 145);
+    border-radius: 10px;
+}
+
+.boxtext{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    list-style-type: none;
+    color: white;
+    font-size: 18px;
+    margin-right: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+
+}
+
+.boxtext_2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    list-style-type: none;
+    color: #ffffff;
+    font-size: 12px;
+    margin-right: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+
+}
+
+.chart {
+    margin-top: 60px;
+}
+

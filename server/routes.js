@@ -128,7 +128,135 @@ async function covid(req, res) {
 
 // Route 3 (handler)
 async function timeline(req, res) {
-    
+    var type = req.params.type ? req.params.type : 'cases'
+    var county = req.query.county_name ? req.query.county_name : 'Alameda'
+    var minDate = req.query.minDate ? req.query.minDate : '2020-02-01'
+    var maxDate = req.query.maxDate ? req.query.maxDate : '2022-11-29'
+    connection.query(`SELECT fips FROM County WHERE county_name= '${county}'`, function (error, results, fields) {
+        console.log(req.query.county_name)
+        county_code = results[0].fips
+        if (type === 'cases') {
+            console.log(minDate)
+            console.log(maxDate)
+            connection.query(`SELECT cases, date
+            FROM CountyCases cc JOIN County c ON cc.county_code = c.fips
+            WHERE cases IS NOT NULL AND fips = ${county_code} AND date >= "${minDate}" AND date <= "${maxDate}";`, function (error, results, fields) {
+                if (error) {
+                    console.log(error)
+                }
+                else if (results) {
+                    //console.log(results[0]);
+                    res.json({ results: results, type: type })
+                }
+            });
+        }
+         else if (type === 'vaccinated') {
+            connection.query(`SELECT v.vaccinated, v.date 
+            FROM CountyVacc v JOIN County c ON v.county_code = c.fips
+            WHERE vaccinated IS NOT NULL AND fips = ${county_code} AND date >= "${minDate}" AND date <= "${maxDate}";`, function (error, results, fields) {
+                if (error) {
+                    console.log(error)
+                }
+                else if (results) {
+                    //console.log(results[0]);
+                    res.json({ results: results, type: type })
+                }
+            });   
+        }
+
+        else if(type === 'deaths'){
+            connection.query(`SELECT d.cases, d.date
+            FROM CountyDeath d JOIN County c ON d.county_code = c.fips
+            WHERE cases IS NOT NULL AND cases >= 0 AND fips = ${county_code} AND date >= "${minDate}" AND  date <= "${maxDate}";`, function (error, results, fields) {
+                if (error) {
+                    console.log(error)
+                }
+                else if (results) {
+                    //console.log(results[0]);
+                    res.json({ results: results, type: type })
+                }
+            });   
+        }
+    })
+}
+
+
+async function timelineCorr(req, res){
+    var type = req.query.type ? req.query.type : 'Overall'
+    var startDate = '2022-09-01'
+    var endDate = '2022-11-29'
+    console.log(type)
+    if (type === "Overall"){
+        connection.query(`WITH Cases AS (SELECT SUM(cc.cases) AS num_cases, SUM(cc.cases)/c.population * 100 AS cases_percent
+                                    FROM CountyCases cc JOIN County c on cc.county_code = c.fips
+                                    WHERE cc.cases IS NOT NULL AND cc.date >= "${startDate}" AND cc.date <= "${endDate}"), 
+                      Vaccinated AS (SELECT SUM(cv.vaccinated) AS num_vaccinated, SUM(cv.vaccinated)/SUM(c.population) * 100 AS vaccinated_percent
+                                    FROM CountyVacc cv JOIN County c on cv.county_code = c.fips
+                                    WHERE cv.vaccinated IS NOT NULL AND  cv.date = "${endDate}"),
+                      
+                      Deaths AS (SELECT SUM(cases) AS num_deaths, SUM(cd.cases)/c.population * 100 AS death_percent
+                                FROM CountyDeath cd JOIN County c on cd.county_code = c.fips
+                                WHERE cd.cases IS NOT NULL AND  cd.date >= "${startDate}" AND cd.date <= "${endDate}")
+                      SELECT c.num_cases, c.cases_percent, c.num_cases/90 AS cases_daily, v.num_vaccinated, v.vaccinated_percent, v.num_vaccinated/90 AS vaccinated_daily, d.num_deaths, d.death_percent, d.num_deaths/90 AS deaths_daily
+                      FROM Cases c, Vaccinated v, Deaths d`, function (error, results, fields) {
+            if (error) {
+                console.log(error)
+            } else if (results) {
+                res.json({ results: results })
+            }
+        });
+    }
+    else if (type === 'All'){
+        connection.query(`WITH Cases AS (SELECT c.county_name, SUM(cc.cases) AS num_cases, SUM(cc.cases)/c.population * 100 AS cases_percent
+                                    FROM CountyCases cc JOIN County c on cc.county_code = c.fips
+                                    WHERE cc.cases IS NOT NULL AND cc.date >= "${startDate}" AND cc.date <= "${endDate}"
+                                    GROUP BY c.county_name), 
+                      Vaccinated AS (SELECT c.county_name, cv.vaccinated AS num_vaccinated, cv.vaccinated/c.population * 100 AS vaccinated_percent
+                                    FROM CountyVacc cv JOIN County c on cv.county_code = c.fips
+                                    WHERE cv.vaccinated IS NOT NULL AND  cv.date = "${endDate}"
+                                    GROUP BY c.county_name),
+                      
+                      Deaths AS (SELECT c.county_name, SUM(cases) AS num_deaths, SUM(cd.cases)/c.population * 100 AS death_percent
+                                FROM CountyDeath cd JOIN County c on cd.county_code = c.fips
+                                WHERE cd.cases IS NOT NULL AND  cd.date >= "${startDate}" AND cd.date <= "${endDate}"
+                                GROUP BY c.county_name)
+                      SELECT c.county_name, c.num_cases, c.cases_percent, v.num_vaccinated, v.vaccinated_percent, d.num_deaths, d.death_percent
+                      FROM Cases c JOIN Vaccinated v ON c.county_name=v.county_name
+                      JOIN Deaths d ON c.county_name = d.county_name
+                      ORDER BY c.county_name`, function (error, results, fields) {
+            if (error) {
+                console.log(error)
+            } else if (results) {
+                res.json({ results: results })
+            }
+        });
+
+    }
+    else if(type === "Overall_by_date"){
+        connection.query(`WITH Cases AS (SELECT cc.date, SUM(cc.cases) AS num_cases
+                                    FROM CountyCases cc JOIN County c on cc.county_code = c.fips
+                                    WHERE cc.cases IS NOT NULL AND cc.date >= "${startDate}" AND cc.date <= "${endDate}" AND cc.date LIKE "%1" OR cc.date LIKE "%14"
+                                    GROUP BY cc.date), 
+                      Vaccinated AS (SELECT cv.date, SUM(cv.vaccinated) AS num_vaccinated
+                                    FROM CountyVacc cv JOIN County c on cv.county_code = c.fips
+                                    WHERE cv.vaccinated IS NOT NULL AND cv.date >= "${startDate}" AND cv.date <= "${endDate}" AND cv.date LIKE "%1" OR cv.date LIKE "%14"
+                                    GROUP BY cv.date),
+                      
+                      Deaths AS (SELECT cd.date, SUM(cases) AS num_deaths
+                                FROM CountyDeath cd JOIN County c on cd.county_code = c.fips
+                                WHERE cd.cases IS NOT NULL AND  cd.date >= "${startDate}" AND cd.date <= "${endDate}" AND cd.date LIKE "%1" OR cd.date LIKE "%14"
+                                GROUP BY cd.date)
+                      SELECT c.date, c.num_cases, v.num_vaccinated, d.num_deaths
+                      FROM Cases c JOIN Vaccinated v ON c.date = v.date
+                      JOIN Deaths d ON d.date = c.date`, function (error, results, fields) {
+            if (error) {
+                console.log(error)
+            } else if (results) {
+                res.json({ results: results })
+            }
+        });
+
+    }
 }
 
 // Route 4 (handler)
@@ -228,5 +356,6 @@ module.exports = {
     rates,
     covid,
     correlations,
-    timeline
+    timeline,
+    timelineCorr
 }

@@ -17,8 +17,15 @@ const getCorrelations = async (category, type, county_name) => {
     return res.json()
 }
 
-const getTimeline = async (type, county_name) => {
-    var res = await fetch(`http://${config.server_host}:${config.server_port}/timeline/${type}?fips=${county_name}`, {
+const getTimeline = async (county_name, type, minDate, maxDate) => {
+    var res = await fetch(`http://${config.server_host}:${config.server_port}/timeline/${type}?county_name=${county_name}&minDate=${minDate}&maxDate=${maxDate}`, {
+        method: 'GET',
+    })
+    return res.json()
+}
+
+const getTimelineCorr = async (county_name, type) => {
+    var res = await fetch(`http://${config.server_host}:${config.server_port}/timelineCorr?type=${type}&county_name=${county_name}`, {
         method: 'GET',
     })
     return res.json()
@@ -43,5 +50,6 @@ export {
     getRates,
     getCovid,
     getCorrelations,
-    getTimeline
+    getTimeline,
+    getTimelineCorr
 }

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { useState } from "react";
 
 import { getCovid, getCounties } from "../fetcher";
@@ -56,15 +56,8 @@ const CovidPage = () => {
 	// Don't worry about this reloading twice. It has no effect on the rendering, which
 	// is what actually counts. Specifically, the JSX in the return block below.
     console.log(covidData)
-//<FlipNumbers play height={40} width={40} color="black" background="white" duration={(covidData && covidData[0].cases_per_100k ? covidData[0].cases_per_100k.toFixed(0) : 0)/70} numbers={covidData && covidData[0].cases_per_100k ? covidData[0].cases_per_100k.toFixed(0) : 0}/>
-/*
-<Box sx={{ minWidth: 150, maxWidth: 600, maxHeight: 600 }}>
-						<CardMedia
-							component="img"
-							image="/pop_density.jpg"
-							alt="population density"/>
-						</Box>*/	
-return (
+
+	return (
 		<div>
 		<FormControl fullWidth>
 			<InputLabel id="demo-simple-select-label">County</InputLabel>

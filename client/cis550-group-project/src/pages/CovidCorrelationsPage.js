@@ -1,17 +1,12 @@
 import { useEffect } from "react";
 import { getCorrelations,getCounties } from "../fetcher";
 import { useState } from "react";
-// import { FormControl } from '@mui/material';
-// import { InputLabel } from '@mui/material';
-// import { Select } from '@mui/material';
-// import { MenuItem } from '@mui/material';
-import { FormControl, InputLabel, Select, MenuItem, Grid, CardHeader } from '@mui/material';
+
+import { FormControl, InputLabel, Select, MenuItem, Grid } from '@mui/material';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia'
-import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
 

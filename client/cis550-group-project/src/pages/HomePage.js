@@ -1,21 +1,16 @@
 import { useEffect } from "react";
-import { getRates } from "../fetcher";
 import { useState } from "react";
 import * as React from 'react';
 
-
-import { FormControl, InputLabel, Select, MenuItem, Grid, createSvgIcon, Tooltip } from '@mui/material';
-import { ComposableMap, Geographies, Geography, ZoomableGroup, setTooltipContent } from "react-simple-maps"
-import { onMouseEnter } from "react-simple-maps"
+import {  Grid, Tooltip } from '@mui/material';
+import { ComposableMap, Geographies, Geography } from "react-simple-maps"
 import { scaleQuantile } from "d3-scale";
 import { csv } from "d3-fetch";
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
-import CardMedia from '@mui/material/CardMedia'
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
-
 
 const geoUrl =
 "https://raw.githubusercontent.com/deldersveld/topojson/master/countries/us-states/CA-06-california-counties.json"

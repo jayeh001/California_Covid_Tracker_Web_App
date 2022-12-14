@@ -38,7 +38,7 @@ async function counties(req, res) {
 }
 
 async function rates(req, res) {
-    connection.query(`SELECT county_name AS name, (AVG(cases)/population) * 100000 as cases_per_100k
+    connection.query(`SELECT CONCAT("0", fips) AS GEOID, (AVG(cases)/population) * 100000 as cases_per_100k
     FROM County JOIN CountyCases ON County.fips = CountyCases.county_code
     GROUP BY fips;`, function(error, results, fields) {
         if (error) {

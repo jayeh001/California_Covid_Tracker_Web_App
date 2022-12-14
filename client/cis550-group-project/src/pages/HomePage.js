@@ -237,7 +237,7 @@ const HomePage = ( setTooltipContent ) => {
                                     &nbsp; &nbsp;37%<br/><br/>
                                     &nbsp; &nbsp;25%<br/><br/>
                                     &nbsp; &nbsp;13%<br/><br/><br />
-                                    &nbsp; &nbsp;0%</div></Grid>
+                                    &nbsp; 0%</div></Grid>
                             </Grid>
                         </Grid>
                     

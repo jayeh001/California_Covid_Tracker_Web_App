@@ -104,17 +104,17 @@ const CovidCorrelations = () => {
 						<Card variant="outlined">
 							<CardContent>
 								<Typography variant="h5" color="text.primary" gutterBottom>
-									Overcrowding Correlation
+									Overall Overcrowding Correlation
 								</Typography>			
 								<Typography variant="h5" component="div">
-									{overCorr? overCorr[0].Correlation: null}
+									{overCorr? overCorr[0].Correlation.toFixed(4) : null}
 								</Typography>
 							</CardContent>
 						</Card>
 					</Box>
 					</Grid>
 					
-					<Grid item xs={1}></Grid>
+	
 					<Grid item xs={3}>
 					<Box sx={{ minWidth: 150, maxWidth: 300 }}>
 						<CardMedia
@@ -125,17 +125,17 @@ const CovidCorrelations = () => {
 						<Card variant="outlined">
 							<CardContent>
 								<Typography variant="h5" color="text.primary" gutterBottom>
-									Poverty Correlation
+									Overall Poverty Correlation
 								</Typography>			
 								<Typography variant="h5" component="div">
-									{povCorr? povCorr[0].Correlation: null}
+									{povCorr? povCorr[0].Correlation.toFixed(4):  null}
 								</Typography>
 							</CardContent>
 						</Card>
 					</Box>
 					</Grid>
 
-					<Grid item xs={1}></Grid>
+	
 					<Grid item xs={3}>
 						<Box sx={{ minWidth: 150, maxWidth: 300 }}>
 							<CardMedia
@@ -146,10 +146,29 @@ const CovidCorrelations = () => {
 							<Card variant="outlined">
 								<CardContent>	
 									<Typography variant="h5" component="div" gutterBottom>
-										Ratio of Category Score to Cases
+										{category[0].toUpperCase() + category.substring(1)} {category === 'overcrowding' ? "Percentage" : "Score" }
 									</Typography>		
 									<Typography variant="h5" component="div">
-										{corrData? corrData[0].cases_rate : null}
+										{corrData? corrData[0].score : null}{category === 'overcrowding' ? '%' : null }
+									</Typography>
+								</CardContent>
+							</Card>
+						</Box>
+					</Grid>
+					<Grid item xs={3}>
+						<Box sx={{ minWidth: 150, maxWidth: 300 }}>
+							<CardMedia
+								height="300"
+								component="img"
+								image="/ratio.svg"
+								alt="ratio symbol"/>
+							<Card variant="outlined">
+								<CardContent>	
+									<Typography variant="h5" component="div" gutterBottom>
+										Overall Average
+									</Typography>		
+									<Typography variant="h5" component="div">
+										{corrData? corrData[0].avg_infected_per_100k.toFixed(2) : null} cases (per 100k)
 									</Typography>
 								</CardContent>
 							</Card>

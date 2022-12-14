@@ -273,10 +273,11 @@ async function correlations(req, res) {
         console.log('this is county code', county_code)
         if (category == 'overcrowding') {
             if (type == 'rates') {
-                connection.query(`WITH X as (SELECT county_code, (SUM(cases)/C.population) * 100 as percent_infected
+                connection.query(`WITH Avg as (SELECT county_code, (AVG(cases)/C.population) * 100000 AS avg_infected_per_100k
             FROM CountyCases CC join County C on CC.county_code = C.fips
-            GROUP BY county_code) SELECT O.county_code, O.percentage/percent_infected as cases_rate
-            FROM Overcrowding O JOIN X on O.county_code = X.county_code
+            WHERE CC.county_code = ${county_code}
+            GROUP BY county_code) SELECT O.percentage AS score, A.avg_infected_per_100k AS avg_infected_per_100k
+            FROM Overcrowding O JOIN Avg A on O.county_code = A.county_code
             WHERE O.county_code = ${county_code}
             `, function(error, results, fields) {
                     if (error) {
@@ -288,16 +289,21 @@ async function correlations(req, res) {
                 })
             } else{
                 console.log('INSIDE OF OVERCROWDING CORRELATION')
-                connection.query(`WITH A as (SELECT overcrowd_avg, AVG(percent_infected_per_county) as infect_avg
-                FROM (SELECT AVG(percentage) as overcrowd_avg
-                FROM Overcrowding) X, (SELECT county_code, (SUM(cases)/C.population) * 100 as percent_infected_per_county FROM CountyCases CC join County C on CC.county_code = C.fips GROUP BY county_code) Y),
-                B as (SELECT county_code, (SUM(cases)/C.population) * 100 as percent_infected_per_county
-                FROM CountyCases CC join County C on CC.county_code = C.fips
-                GROUP BY county_code)
-                SELECT SUM( (O.percentage - overcrowd_avg) * (percent_infected_per_county - infect_avg) ) /
-                    ((count(*) -1) * (stddev_samp(percentage) * stddev_samp(percent_infected_per_county)))
-                        as Correlation
-                FROM Overcrowding O JOIN B on O.county_code = B.county_code, A
+                connection.query(`WITH County_Avg AS (SELECT county_code, AVG(cases) AS avg_infected_per_county
+                FROM CountyCases
+                GROUP BY county_code),
+
+                County_Avg_Per_100k AS (SELECT county_code, (avg_infected_per_county/population) * 100000 AS per_100k_infect_avg
+                    FROM County_Avg JOIN County ON County_Avg.county_code = County.FIPS),
+
+                Both_Averages AS (SELECT overcrowd_avg, AVG(per_100k_infect_avg) AS overall_infect_avg
+                                FROM (SELECT county_code, AVG(percentage) AS overcrowd_avg
+                                FROM Overcrowding) O JOIN County_Avg_Per_100k CA ON O.county_code = CA.county_code)
+
+                SELECT SUM( (O.percentage - overcrowd_avg) * (CA.per_100k_infect_avg - overall_infect_avg) ) /
+                ((count(*) -1) * (stddev_samp(percentage) * stddev_samp(per_100k_infect_avg)))
+                    as Correlation
+                FROM Overcrowding O JOIN County_Avg_Per_100k CA on O.county_code = CA.county_code, Both_Averages;
                 `, function(error, results, fields) {
                     if (error) {
                         console.log(error)
@@ -309,12 +315,13 @@ async function correlations(req, res) {
             }
         } else if (category == 'poverty') {
             if (type == 'rates') {
-                connection.query(`WITH A as (SELECT county_code, (SUM(cases)/C.population) * 100 as percent_infected_per_county
+                connection.query(`WITH Avg as (SELECT county_code, (AVG(cases)/C.population) * 100000 AS avg_infected_per_100k
                 FROM CountyCases CC join County C on CC.county_code = C.fips
+                WHERE CC.county_code = ${county_code}
                 GROUP BY county_code)
-                SELECT P.county_code, P.poverty/percent_infected_per_county as cases_rate
-                FROM Poverty P JOIN A on P.county_code = A.county_code
-                WHERE P.county_code = ${county_code}
+                SELECT P.poverty AS score, A.avg_infected_per_100k AS avg_infected_per_100k
+                FROM Poverty P JOIN Avg A on P.county_code = A.county_code
+                WHERE P.county_code = ${county_code};
                 `,function(error, results, fields) {
                     if (error) {
                         console.log(error)
@@ -324,16 +331,21 @@ async function correlations(req, res) {
                     }
                 })
             } else {
-                connection.query(`WITH A as (SELECT poverty_avg, AVG(percent_infected_per_county) as infect_avg
-                FROM (SELECT AVG(poverty) as poverty_avg
-                FROM Poverty) X, (SELECT county_code, (SUM(cases)/C.population) * 100 as percent_infected_per_county FROM CountyCases CC join County C on CC.county_code = C.fips GROUP BY county_code) Y),
-                B as (SELECT county_code, (SUM(cases)/C.population) * 100 as percent_infected_per_county
-                FROM CountyCases CC join County C on CC.county_code = C.fips
-                GROUP BY county_code)
-                SELECT SUM( (P.poverty - poverty_avg) * (percent_infected_per_county - infect_avg) ) /
-                    ((count(*) -1) * (stddev_samp(poverty) * stddev_samp(percent_infected_per_county)))
-                        as Correlation
-                FROM Poverty P JOIN B on P.county_code = B.county_code, A;
+                connection.query(`WITH County_Avg AS (SELECT county_code, AVG(cases) AS avg_infected_per_county
+                FROM CountyCases
+                GROUP BY county_code),
+
+                County_Avg_Per_100k AS (SELECT county_code, (avg_infected_per_county/population) * 100000 AS per_100k_infect_avg
+                    FROM County_Avg JOIN County ON County_Avg.county_code = County.FIPS),
+
+                Both_Averages AS (SELECT poverty_avg, AVG(per_100k_infect_avg) AS overall_infect_avg
+                                FROM (SELECT county_code, AVG(poverty) AS poverty_avg
+                                FROM Poverty) P JOIN County_Avg_Per_100k CA ON P.county_code = CA.county_code)
+
+                SELECT SUM( (P.poverty - poverty_avg) * (CA.per_100k_infect_avg - overall_infect_avg) ) /
+                ((count(*) -1) * (stddev_samp(poverty) * stddev_samp(per_100k_infect_avg)))
+                    as Correlation
+                FROM Poverty P JOIN County_Avg_Per_100k CA on P.county_code = CA.county_code, Both_Averages;
                 `, function(error, results, fields) {
                     if (error) {
                         console.log(error)

@@ -31,8 +31,16 @@ const getCounties = async () => {
     return res.json()
 }
 
+const getRates = async () => {
+    var res = await fetch(`http://${config.server_host}:${config.server_port}/rates`, {
+        method: 'GET',
+    })
+    return res.json()
+}
+
 export {
     getCounties,
+    getRates,
     getCovid,
     getCorrelations,
     getTimeline

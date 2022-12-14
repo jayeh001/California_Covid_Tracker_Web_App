@@ -4,3 +4,23 @@
   /* max-width: 40rem; */
     background-color: white; /*#1465C0;*/
 }
+
+svg {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+
+
+.example-wrapper {
+  padding: 16px 120px;
+}
+
+.MuiTooltip-tooltip{
+  size: 20pt
+}
+
+.gradient {
+  background-image: linear-gradient(to bottom, rgb(255, 201, 192) 12.5%, rgb(255, 173, 159) 25%, #ff8a75 37.5%, #ff5533 50%, #e2492d 62.5%, #be3d26 75%, rgb(154, 49, 31) 87.5%,rgb(120,38,24) 100%)
+
+}

@@ -28,9 +28,6 @@ app.get('/timelineCorr', routes.timelineCorr)
 // Route 5 - register as GET
 app.get('/counties', routes.counties)
 
-// Route 5 - register as GET
-app.get('/rates', routes.rates)
-
 
 app.listen(config.server_port, () => {
     console.log(`Server running at http://${config.server_host}:${config.server_port}/`);

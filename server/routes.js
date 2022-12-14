@@ -96,15 +96,15 @@ async function covid(req, res) {
         } else {
             connection.query(`WITH Averages AS (SELECT cases_avg, deaths_avg, county_code
                 FROM (SELECT AVG(cases) AS cases_avg, county_code
-                      FROM CountyCases WHERE date < '2022-01-01' AND county_code = ${county_code} GROUP BY county_code) X,
+                      FROM CountyCases WHERE county_code = ${county_code} GROUP BY county_code) X,
                      (SELECT AVG(cases) AS deaths_avg
-                      FROM CountyDeath WHERE date < '2022-01-01' AND county_code = ${county_code} GROUP BY county_code) Y),
+                      FROM CountyDeath WHERE county_code = ${county_code} GROUP BY county_code) Y),
 
                 Cases AS (SELECT cases, date, county_code
-                        FROM CountyCases WHERE county_code = ${county_code} AND date < '2022-01-01'),
+                        FROM CountyCases WHERE county_code = ${county_code}),
 
                 Deaths AS (SELECT cases, date, county_code
-                            FROM CountyDeath WHERE county_code = ${county_code}  AND date < '2022-01-01'),
+                            FROM CountyDeath WHERE county_code = ${county_code}),
 
                 County_Pop AS (SELECT county_name, population, description
                                FROM County WHERE fips = ${county_code})

@@ -19,8 +19,8 @@ code {
 .gradient {
   margin-top: 25px;
   max-width:25px;
-  min-height: 515px;
-  background-image: linear-gradient(to bottom, #ffc9c0 0% 12.5%, #ffad9f 12.5% 25%, #ff8a75 25% 37.5%, #ff5533 37.5% 50%, #e2492d 50% 62.5%, #be3d26 62.5% 75%, #9a311f 75% 87.5%, #782618 87.5% 100%)
+  min-height: 365px;
+  background-image: linear-gradient(to top, #ffc9c0 0% 12.5%, #ffad9f 12.5% 25%, #ff8a75 25% 37.5%, #ff5533 37.5% 50%, #e2492d 50% 62.5%, #be3d26 62.5% 75%, #9a311f 75% 87.5%, #782618 87.5% 100%)
 }
 
 .invis {

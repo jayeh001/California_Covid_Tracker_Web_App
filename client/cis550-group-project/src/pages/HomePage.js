@@ -223,16 +223,16 @@ const HomePage = ( setTooltipContent ) => {
                             <Grid container spacing={0}>
                                 <Grid item xs={12}><b class="size">Legend (Percentile)</b></Grid>
                                 <Grid item xs={1}><div class="gradient"></div></Grid>
-                                <Grid item xs={3}><div >
-                                    &nbsp; &nbsp;100%<br/><br/>
+                                <Grid item xs={3}><div>
+                                    &nbsp; &nbsp;&nbsp;100%<br/><br/>
                                     &nbsp; &nbsp;87%<br/><br/>
                                     &nbsp; &nbsp;75%<br/><br/>
                                     &nbsp; &nbsp;63%<br/><br/>
                                     &nbsp; &nbsp;50%<br/><br/>
                                     &nbsp; &nbsp;37%<br/><br/>
                                     &nbsp; &nbsp;25%<br/><br/>
-                                    &nbsp; &nbsp;13%<br/><br/><br />
-                                    &nbsp; 0%</div></Grid>
+                                    &nbsp; &nbsp;13%<br/><br/>
+                                    &nbsp;&nbsp; 0%</div></Grid>
                             </Grid>
                         </Grid>
                     

@@ -89,7 +89,7 @@ const CovidCorrelations = () => {
 				<MenuItem value={'poverty'}>Poverty</MenuItem>			
 			</Select>
 		</FormControl>
-	
+		<p></p>		
         <p></p>
 		{  
 	
@@ -141,8 +141,8 @@ const CovidCorrelations = () => {
 							<CardMedia
 								height="300"
 								component="img"
-								image="/ratio.svg"
-								alt="ratio symbol"/>
+								image="/percentage.png"
+								alt="percent symbol"/>
 							<Card variant="outlined">
 								<CardContent>	
 									<Typography variant="h5" component="div" gutterBottom>
@@ -160,8 +160,8 @@ const CovidCorrelations = () => {
 							<CardMedia
 								height="300"
 								component="img"
-								image="/ratio.svg"
-								alt="ratio symbol"/>
+								image="/sick.png"
+								alt="sick symbol"/>
 							<Card variant="outlined">
 								<CardContent>	
 									<Typography variant="h5" component="div" gutterBottom>
